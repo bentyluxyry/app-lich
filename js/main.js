@@ -3,10 +3,10 @@ import { getDayInfo, generateMonthGrid, formatWeekDay, renderDailyDetailHTML, re
 import { renderBlogList, renderBlogDetail } from './blog.js';
 import { BlogService } from './service.js';
 import { renderFortune, handleFortuneCheck } from './fortune.js';
-import { renderHeroSection } from './components/hero.js'; // IMPORT MODULE MỚI
+import { renderHeroSection } from './components/hero.js'; 
+import { UserService } from './user.js'; // IMPORT MODULE USER
 
 // --- CONFIGURATION ---
-// Định nghĩa mối quan hệ giữa các danh mục con và nhóm cha để xử lý Breadcrumb và Filter
 const GROUP_MAPPING = {
     'FENGSHUI_GROUP': {
         label: 'Phong Thủy - Tử Vi',
@@ -18,12 +18,11 @@ const GROUP_MAPPING = {
     }
 };
 
-// Hàm tìm Group ID dựa trên Category ID
 const findGroupByCat = (catId) => {
     for (const [groupId, data] of Object.entries(GROUP_MAPPING)) {
         if (data.categories.includes(catId)) return { groupId, label: data.label };
     }
-    return null; // Mặc định hoặc không thuộc nhóm nào
+    return null; 
 };
 
 // --- STATE ---
@@ -31,18 +30,17 @@ const state = {
   currentView: 'HOME',
   date: new Date(),
   viewingPost: null,
-  currentCategory: null, // Đang xem 1 danh mục cụ thể (vd: Thần số học)
-  currentGroup: null,    // Đang xem 1 nhóm danh mục (vd: Phong Thủy - Tử Vi)
+  currentCategory: null, 
+  currentGroup: null,    
   isMenuOpen: false,
   countdownInterval: null,
-  chatHistory: []
+  chatHistory: [],
+  currentUser: null // State User
 };
 
 // --- HELPERS ---
 const startCountdown = () => {
     if (state.countdownInterval) clearInterval(state.countdownInterval);
-    
-    // Tết Bính Ngọ: 17/02/2026
     const tetDate = new Date('2026-02-17T00:00:00').getTime();
 
     const update = () => {
@@ -54,12 +52,10 @@ const startCountdown = () => {
         const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((dist % (1000 * 60)) / 1000);
 
-        // 1. Cập nhật cho các hiển thị dạng text đơn giản (Home, Bài cũ)
         const textIds = ['timer-home', 'timer-post'];
         textIds.forEach(id => {
             const el = document.getElementById(id);
             if (!el) return;
-
             if (dist < 0) {
                 el.innerHTML = "CHÚC MỪNG NĂM MỚI!";
             } else {
@@ -67,7 +63,6 @@ const startCountdown = () => {
             }
         });
 
-        // 2. Cập nhật cho Bài viết 11 (Giao diện Banner Hộp)
         const dEl = document.getElementById('t-d');
         if (dEl) {
              if (dist < 0) {
@@ -81,12 +76,11 @@ const startCountdown = () => {
              }
         }
     };
-    
     update();
     state.countdownInterval = setInterval(update, 1000);
 };
 
-// --- COMPONENT GENERATORS ---
+// --- COMPONENT GENERATORS (Giữ nguyên các hàm render HTML phụ) ---
 const getRelatedPostsHTML = (postId) => {
     const relatedPosts = BlogService.getRelatedPosts(postId);
     return `
@@ -115,8 +109,6 @@ const getServicesHTML = () => {
         { img: "https://images.unsplash.com/photo-1560518883-ce09059ee971?w=100&h=100&fit=crop", title: "Xem ngày làm nhà", sub: "An cư lạc nghiệp" },
         { img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=100&h=100&fit=crop", title: "Xem ngày khai trương", sub: "Hồng phát tài lộc" }
     ];
-
-    // Thay đổi: Giảm padding header từ px-4 xuống px-3, nội dung từ p-4 xuống p-3
     return `
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="border-l-4 border-green-600 px-3 py-3 bg-gray-50 border-b border-gray-100">
@@ -138,7 +130,6 @@ const getServicesHTML = () => {
 };
 
 const getAIWidgetHTML = () => {
-    // Thay đổi: Giảm padding từ p-5 xuống p-4
     return `
         <div class="bg-gradient-to-br from-green-600 to-teal-700 rounded-xl shadow-lg p-4 text-white relative overflow-hidden">
              <div class="relative z-10">
@@ -163,14 +154,9 @@ const renderSidebar = () => {
 };
 
 const renderHome = () => {
-    // 1. GỌI COMPONENT HERO SECTION MỚI
     const heroHTML = renderHeroSection();
-
     return `
-        <!-- HERO SECTION (Đưa lên đầu) -->
         ${heroHTML}
-
-        <!-- Tet Banner (Giữ lại nhưng bên dưới) -->
         <div class="mb-8 rounded-2xl overflow-hidden shadow-md bg-red-600 text-white relative">
              <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-20"></div>
              <div class="p-6 md:p-10 text-center relative z-10">
@@ -178,7 +164,6 @@ const renderHome = () => {
                  <div id="timer-home" class="text-white text-lg md:text-2xl mt-2">Đang tải...</div>
              </div>
         </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-8 space-y-8">
                 <div id="daily-section">
@@ -199,6 +184,9 @@ const renderHome = () => {
 const app = {
     init: () => {
         initAI();
+        // Check User Login Status
+        state.currentUser = UserService.getCurrentUser();
+
         const params = new URLSearchParams(window.location.search);
         const view = params.get('view');
         const slug = params.get('slug');
@@ -213,6 +201,7 @@ const app = {
         app.render();
         renderNav();
         renderMobileMenu();
+        app.updateAuthUI(); // Cập nhật UI đăng nhập
     },
 
     render: () => {
@@ -225,8 +214,6 @@ const app = {
         if (state.currentView === 'HOME' || state.currentView === 'CALENDAR' || state.currentView === 'DAILY') {
             main.innerHTML = renderHome();
             setTimeout(startCountdown, 100);
-            
-            // Logic cuộn trang tự động dựa vào View
             setTimeout(() => {
                 if (state.currentView === 'CALENDAR') {
                     const el = document.getElementById('calendar-view-container');
@@ -252,9 +239,7 @@ const app = {
             } else {
                 let posts = [];
                 let title = "Tất cả bài viết";
-
                 if (state.currentCategory) {
-                    // Lọc 1 danh mục
                     posts = BlogService.getPostsByCategory(state.currentCategory);
                     if(state.currentCategory === 'TU_VI') title = "Tử Vi";
                     else if(state.currentCategory === 'THAN_SO_HOC') title = "Thần Số Học";
@@ -262,17 +247,14 @@ const app = {
                     else if(state.currentCategory === 'VAN_KHAN') title = "Văn Khấn Cổ Truyền";
                     else if(state.currentCategory === 'LE_TET') title = "Ngày Lễ Tết";
                 } else if (state.currentGroup) {
-                    // Lọc theo nhóm danh mục (Cha)
                     const groupData = GROUP_MAPPING[state.currentGroup];
                     if (groupData) {
                         posts = BlogService.getPostsByCategories(groupData.categories);
                         title = groupData.label;
                     }
                 } else {
-                    // Lấy hết
                     posts = BlogService.getAllPosts();
                 }
-
                 main.innerHTML = renderBlogList(posts, title);
             }
         } else if (state.currentView === 'LOVE') {
@@ -294,14 +276,11 @@ const app = {
         state.viewingPost = null;
         state.currentCategory = null;
         state.currentGroup = null;
-        
         app.closeMenu();
-        
         const url = new URL(window.location);
         url.searchParams.set('view', view);
         url.searchParams.delete('slug');
         window.history.pushState({}, '', url);
-        
         app.render();
         renderNav();
         renderMobileMenu();
@@ -314,47 +293,38 @@ const app = {
         } else {
             post = BlogService.getPostById(slugOrId);
         }
-
         if (post) {
             state.viewingPost = post;
             state.currentView = 'BLOG';
-            // Khi xem bài viết, reset filter để breadcrumb tính toán lại dựa trên post hiện tại
             state.currentCategory = null; 
             state.currentGroup = null;
-            
             app.closeMenu();
-            
             const url = new URL(window.location);
             url.searchParams.set('view', 'BLOG');
             url.searchParams.set('slug', post.slug);
             window.history.pushState({}, '', url);
-            
             app.render();
             renderNav();
             renderMobileMenu();
         }
     },
     
-    // Lọc theo 1 danh mục con (vd: Tử Vi)
     filterBlog: (category) => {
         state.currentView = 'BLOG';
         state.viewingPost = null;
         state.currentCategory = category;
-        state.currentGroup = null; // Reset group
-        
+        state.currentGroup = null; 
         app.closeMenu();
         app.render();
         renderNav();
         renderMobileMenu();
     },
 
-    // Lọc theo nhóm cha (vd: Phong Thủy - Tử Vi)
     filterGroup: (groupId) => {
         state.currentView = 'BLOG';
         state.viewingPost = null;
-        state.currentCategory = null; // Reset category con
+        state.currentCategory = null; 
         state.currentGroup = groupId;
-        
         app.closeMenu();
         app.render();
         renderNav();
@@ -378,13 +348,10 @@ const app = {
     toggleMenu: () => { 
         const m = document.getElementById('mobile-menu');
         const overlay = document.getElementById('menu-overlay');
-        
         if (m.classList.contains('-translate-x-full')) {
-            // Open
             m.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
         } else {
-            // Close
             app.closeMenu();
         }
     },
@@ -392,22 +359,81 @@ const app = {
     closeMenu: () => {
         const m = document.getElementById('mobile-menu');
         const overlay = document.getElementById('menu-overlay');
-        
         if (m && !m.classList.contains('-translate-x-full')) {
              m.classList.add('-translate-x-full');
              overlay.classList.add('hidden');
         }
     },
 
-    // Mở popup đăng nhập
+    // --- XỬ LÝ ĐĂNG NHẬP ---
     toggleLogin: () => {
         const modal = document.getElementById('login-modal');
-        if (modal) {
-            modal.classList.toggle('hidden');
+        if (modal) modal.classList.toggle('hidden');
+    },
+
+    updateAuthUI: () => {
+        const container = document.getElementById('desktop-auth-container');
+        if (!container) return;
+
+        if (state.currentUser) {
+            // Đã đăng nhập
+            container.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-bold text-gray-700 hidden lg:block">Hi, ${state.currentUser.name}</span>
+                    <div class="relative group">
+                        <img src="${state.currentUser.avatar}" class="w-9 h-9 rounded-full border border-gray-200 cursor-pointer object-cover">
+                        <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 hidden group-hover:block z-50">
+                            <div class="p-3 border-b text-sm font-bold text-gray-700">${state.currentUser.name}</div>
+                            <button onclick="app.logout()" class="w-full text-left p-3 text-sm text-red-600 hover:bg-gray-50 rounded-b-lg">Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Chưa đăng nhập
+            container.innerHTML = `
+                <button onclick="app.toggleLogin()" class="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold transition shadow-md">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Đăng nhập
+                </button>
+            `;
+        }
+        // Cập nhật lại Mobile Menu để hiển thị thông tin
+        renderMobileMenu();
+    },
+
+    loginGoogle: async () => {
+        document.getElementById('login-loading').classList.remove('hidden');
+        const user = await UserService.loginWithGoogle();
+        document.getElementById('login-loading').classList.add('hidden');
+        
+        state.currentUser = user;
+        app.updateAuthUI();
+        app.toggleLogin(); // Đóng modal
+        alert(`Chào mừng ${user.name} đã quay trở lại!`);
+    },
+
+    loginFacebook: async () => {
+        document.getElementById('login-loading').classList.remove('hidden');
+        const user = await UserService.loginWithFacebook();
+        document.getElementById('login-loading').classList.add('hidden');
+        
+        state.currentUser = user;
+        app.updateAuthUI();
+        app.toggleLogin(); 
+        alert(`Kết nối Facebook thành công! Chào ${user.name}.`);
+    },
+
+    logout: () => {
+        if(confirm('Bạn có chắc muốn đăng xuất?')) {
+            UserService.logout();
+            state.currentUser = null;
+            app.updateAuthUI();
+            location.reload(); // Tải lại trang để reset sạch
         }
     },
 
-    // Xử lý đóng mở Footer trên Mobile
+    // --- CÁC HÀM UI KHÁC ---
     toggleFooter: (id) => {
         const el = document.getElementById(id);
         const icon = document.getElementById('icon-' + id);
@@ -422,7 +448,6 @@ const app = {
         }
     },
 
-    // Scroll xuống Footer (cho menu Liên hệ)
     scrollToFooter: () => {
         document.getElementById('main-footer').scrollIntoView({ behavior: 'smooth' });
     },
@@ -435,14 +460,14 @@ const app = {
                 sub.classList.remove('max-h-0', 'hidden');
                 sub.classList.add('max-h-[500px]');
                 if(icon) {
-                    icon.innerHTML = '-'; // Chuyển dấu + thành -
+                    icon.innerHTML = '-'; 
                     icon.classList.add('text-green-500');
                 }
             } else {
                 sub.classList.add('max-h-0');
                 sub.classList.remove('max-h-[500px]');
                 if(icon) {
-                    icon.innerHTML = '+'; // Chuyển dấu - thành +
+                    icon.innerHTML = '+'; 
                     icon.classList.remove('text-green-500');
                 }
             }
@@ -485,7 +510,7 @@ const menuStructure = [
     {
         id: 'FENGSHUI_GROUP', 
         label: 'Phong Thủy - Tử Vi',
-        directAction: "app.filterGroup('FENGSHUI_GROUP')", // Click vào cha hiển thị tất cả
+        directAction: "app.filterGroup('FENGSHUI_GROUP')", 
         children: [
             { id: 'LOVE', label: 'Bói Tình Duyên', type: 'view' },
             { id: 'TU_VI', label: 'Tử Vi', type: 'filter' },
@@ -496,7 +521,7 @@ const menuStructure = [
     {
         id: 'CULTURE_GROUP', 
         label: 'Văn Hóa & Blog', 
-        directAction: "app.filterGroup('CULTURE_GROUP')", // Click vào cha hiển thị tất cả
+        directAction: "app.filterGroup('CULTURE_GROUP')", 
         children: [
             { id: 'VAN_KHAN', label: 'Văn Khấn Cổ Truyền', type: 'filter' },
             { id: 'LE_TET', label: 'Ngày Lễ Tết', type: 'filter' },
@@ -517,46 +542,27 @@ function renderNav() {
 
      desktopMenu.innerHTML = menuStructure.map(item => {
          let isActive = false;
-         
-         // --- LOGIC HIGHLIGHT MỚI (CHẶT CHẼ HƠN) ---
-         
-         // 1. Nếu đang chọn đúng Nhóm cha (click vào tên nhóm)
          if (item.id === state.currentGroup) {
              isActive = true;
-         } 
-         // 2. Nếu không chọn nhóm, kiểm tra các con
-         else if (item.children) {
+         } else if (item.children) {
              isActive = item.children.some(c => {
-                 // Ưu tiên 1: Đang xem bài viết chi tiết
-                 // -> Highlight nếu danh mục của bài viết thuộc nhóm này
                  if (state.viewingPost) {
                      return c.type === 'filter' && c.id === state.viewingPost.category;
                  }
-
-                 // Ưu tiên 2: Đang lọc theo Danh mục cụ thể
-                 // -> Highlight nếu danh mục đang chọn thuộc nhóm này
                  if (state.currentCategory) {
                      return c.type === 'filter' && c.id === state.currentCategory;
                  }
-
-                 // Ưu tiên 3: Chỉ là View chung (vd: Trang chủ, Lịch) 
-                 // -> Highlight nếu View ID trùng khớp VÀ không đang xem bài viết/category nào khác
-                 // (Điều kiện này giúp tránh việc 'BLOG' trong nhóm Văn Hóa sáng lên khi đang xem 'Tử Vi' thuộc nhóm Phong Thủy)
                  if (c.type === 'view' && state.currentView === c.id) {
                      return !state.currentCategory && !state.viewingPost;
                  }
-
                  return false;
              });
-         } 
-         // 3. Menu đơn lẻ (không con)
-         else if (item.id === state.currentView) {
+         } else if (item.id === state.currentView) {
              isActive = true;
          }
          
          if (item.children) {
              const clickAttr = item.directAction ? `onclick="${item.directAction}"` : '';
-             
              return `
                 <div class="relative group h-full flex items-center">
                     <div ${clickAttr} class="px-3 py-2 rounded-lg cursor-pointer font-medium transition flex items-center gap-1 ${isActive ? 'text-green-700 font-bold' : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'}">
@@ -593,22 +599,40 @@ function renderMobileMenu() {
 
     <div class="bg-[#1a1a1a] flex-1 overflow-y-auto text-white">
         
+        <!-- USER INFO ON MOBILE MENU -->
+        <div class="p-5 border-b border-gray-800">
+            ${state.currentUser ? `
+                <div class="flex items-center gap-3">
+                    <img src="${state.currentUser.avatar}" class="w-12 h-12 rounded-full border-2 border-green-600 object-cover">
+                    <div>
+                        <div class="font-bold text-white text-lg">${state.currentUser.name}</div>
+                        <div onclick="app.logout()" class="text-xs text-red-400 cursor-pointer hover:underline">Đăng xuất</div>
+                    </div>
+                </div>
+            ` : `
+                <button onclick="app.toggleLogin(); app.closeMenu()" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl shadow hover:bg-green-700 transition">
+                    Đăng nhập ngay
+                </button>
+            `}
+        </div>
+
         <!-- Social Icons (Mô phỏng Unitheme) -->
+        <!-- BẠN HÃY THAY LINK CỦA BẠN VÀO CÁC CHỖ HREF BÊN DƯỚI -->
         <div class="px-5 py-6 flex gap-3 border-b border-gray-800">
             <!-- Facebook -->
-            <a href="https://facebook.com" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#1877F2] transition text-gray-400 hover:text-white" title="Facebook">
+            <a href="https://www.facebook.com/trang-cua-ban" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#1877F2] transition text-gray-400 hover:text-white" title="Facebook">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             </a>
             <!-- TikTok -->
-            <a href="https://tiktok.com" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-black hover:border hover:border-gray-700 transition text-gray-400 hover:text-white" title="TikTok">
+            <a href="https://www.tiktok.com/@kenh-cua-ban" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-black hover:border hover:border-gray-700 transition text-gray-400 hover:text-white" title="TikTok">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93v6.16c0 2.52-1.12 4.88-2.91 6.52-1.78 1.63-4.15 2.51-6.55 2.52-2.5-.02-4.96-1.05-6.66-2.92S-.25 15.98 0 13.52c.24-2.46 1.4-4.8 3.23-6.44a8.68 8.68 0 0 1 2.7-1.53v4.43c-.7.16-1.37.49-1.92.95a4.29 4.29 0 0 0-1.48 3.27 4.29 4.29 0 0 0 2.96 4.1 4.29 4.29 0 0 0 4.6-2.09c.75-1.19.98-2.61.9-4v-12.2z"/></svg>
             </a>
             <!-- YouTube -->
-            <a href="https://youtube.com" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#FF0000] transition text-gray-400 hover:text-white" title="YouTube">
+            <a href="https://www.youtube.com/@kenh-cua-ban" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#FF0000] transition text-gray-400 hover:text-white" title="YouTube">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
             <!-- Zalo -->
-            <a href="https://zalo.me" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#0068FF] transition text-gray-400 hover:text-white font-bold text-xs" title="Zalo">
+            <a href="https://zalo.me/sdt-cua-ban" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#0068FF] transition text-gray-400 hover:text-white font-bold text-xs" title="Zalo">
                 Zalo
             </a>
         </div>
@@ -617,14 +641,13 @@ function renderMobileMenu() {
         <div class="flex flex-col">
     `;
 
-    // Render danh sách menu
+    // Render danh sách menu (giữ nguyên logic)
     html += menuStructure.map(item => {
         if (item.children) {
             const textClick = item.directAction 
                 ? `${item.directAction}; app.closeMenu()` 
                 : `app.toggleSubMenu('${item.id}')`;
             
-            // Style kiểu Unitheme: Chữ in hoa, đậm, ngăn cách bởi border tối
             return `
             <div class="border-b border-gray-800">
                 <div class="flex justify-between items-center px-5 py-4 cursor-pointer hover:bg-[#252525] transition select-none group" onclick="${textClick}">
@@ -645,7 +668,6 @@ function renderMobileMenu() {
         </div>`;
     }).join('');
 
-    // Footer Copyright trong menu
     html += `
         </div>
         <div class="p-6 text-center text-xs text-gray-600 mt-4">
@@ -657,9 +679,9 @@ function renderMobileMenu() {
 }
 
 function renderTopBar() {
+    // (Giữ nguyên nội dung TopBar như cũ)
     const container = document.getElementById('top-bar');
     if (!container) return;
-
     const tags = [
         { label: "# Tết Bính Ngọ 2026", action: "app.viewPost('tet-2026-la-ngay-nao-em-nguoc-con-bao-nhieu-ngay')" },
         { label: "# Tử vi 2025", action: "app.filterBlog('TU_VI')" },
@@ -684,8 +706,6 @@ function renderTopBar() {
     `;
 
     let breadcrumbHTML = '';
-    
-    // --- LOGIC BREADCRUMB MỚI ---
     if (state.currentView !== 'HOME') {
         breadcrumbHTML = `
             <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -694,7 +714,6 @@ function renderTopBar() {
                     Trang chủ
                 </a>
         `;
-
         if (state.currentView === 'CALENDAR' || state.currentView === 'DAILY') {
             breadcrumbHTML += ` <span class="text-gray-300">»</span> <span class="text-gray-700 font-medium">Lịch Vạn Niên</span>`;
         } else if (state.currentView === 'ASSISTANT') {
@@ -702,37 +721,25 @@ function renderTopBar() {
         } else if (state.currentView === 'LOVE') {
             breadcrumbHTML += ` <span class="text-gray-300">»</span> <a onclick="app.filterGroup('FENGSHUI_GROUP')" class="cursor-pointer hover:text-green-600">Phong Thủy - Tử Vi</a> <span class="text-gray-300">»</span> <span class="text-gray-700 font-medium">Bói Tình Duyên</span>`;
         } else if (state.currentView === 'BLOG') {
-             // 1. Xác định Danh mục & Nhóm cha
              let activeCat = state.currentCategory;
              let activeGroup = state.currentGroup;
-
-             // Nếu đang xem bài viết, lấy category từ bài viết
              if (state.viewingPost && !activeCat) {
                  activeCat = state.viewingPost.category;
              }
-
-             // Nếu có category, tìm Group cha của nó
              let groupInfo = null;
              if (activeCat) {
                  groupInfo = findGroupByCat(activeCat);
              } else if (activeGroup) {
                  groupInfo = GROUP_MAPPING[activeGroup];
-                 groupInfo.groupId = activeGroup; // Gán ID để dùng lại action
+                 groupInfo.groupId = activeGroup; 
              } else {
-                 // Trường hợp "Tất cả bài viết" hoặc không thuộc nhóm nào
                  groupInfo = { label: 'Văn Hóa & Blog', groupId: 'CULTURE_GROUP' }; 
              }
-
-             // 2. Render Breadcrumb Nhóm Cha
              if (groupInfo) {
-                 // Nếu biết Group ID thì click vào sẽ filter theo group đó
                  const groupAction = groupInfo.groupId || (findGroupByCat(activeCat)?.groupId);
                  const action = groupAction ? `app.filterGroup('${groupAction}')` : `app.navigate('BLOG')`;
-                 
                  breadcrumbHTML += ` <span class="text-gray-300">»</span> <a onclick="${action}" class="cursor-pointer hover:text-green-600">${groupInfo.label}</a>`;
              }
-
-             // 3. Render Breadcrumb Danh mục con (nếu đang filter hoặc xem bài viết)
              if (activeCat) {
                  let catName = "Danh mục";
                  if(activeCat === 'TU_VI') catName = "Tử Vi";
@@ -740,28 +747,24 @@ function renderTopBar() {
                  else if(activeCat === 'PHONG_THUY') catName = "Phong Thủy";
                  else if(activeCat === 'VAN_KHAN') catName = "Văn Khấn";
                  else if(activeCat === 'LE_TET') catName = "Ngày Lễ Tết";
-                 
                  breadcrumbHTML += ` <span class="text-gray-300">»</span> <span onclick="app.filterBlog('${activeCat}')" class="cursor-pointer hover:text-green-600">${catName}</span>`;
              }
-
-             // 4. Render Tên bài viết
              if (state.viewingPost) {
                  breadcrumbHTML += ` <span class="text-gray-300">»</span> <span class="text-gray-900 font-medium truncate max-w-[150px] md:max-w-xs block" title="${state.viewingPost.title}">${state.viewingPost.title}</span>`;
              }
         }
         breadcrumbHTML += `</div>`;
     }
-
     trendHTML += `
             </div>
             ${breadcrumbHTML ? `<div class="mt-2 pt-2 border-t border-gray-100">${breadcrumbHTML}</div>` : ''}
         </div>
     `;
-
     container.innerHTML = trendHTML;
 }
 
 function renderAssistantLayout() {
+    // Layout giữ nguyên
     const msgs = state.chatHistory.map(msg => `<div class="flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}"><div class="chat-bubble ${msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-model'}">${msg.text}</div></div>`).join('');
     return `
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
