@@ -237,6 +237,7 @@ const app = {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
         renderTopBar();
+        app.updateBottomNavState(); // Update active state cho menu dưới
 
         if (state.currentView === 'HOME') {
             main.innerHTML = renderHome();
@@ -409,6 +410,40 @@ const app = {
         if (m && !m.classList.contains('-translate-x-full')) {
              m.classList.add('-translate-x-full');
              overlay.classList.add('hidden');
+        }
+    },
+
+    // --- USER ACTIONS ---
+    // Mới: Xử lý khi bấm vào icon User ở Header hoặc Tab Cá Nhân ở BottomNav
+    handleUserAction: () => {
+        // Mở drawer bên trái (có chứa thông tin user và nút đăng nhập)
+        app.toggleMenu();
+    },
+
+    // Mới: Cập nhật màu sắc cho Bottom Nav
+    updateBottomNavState: () => {
+        const ids = ['nav-home', 'nav-tu-vi', 'nav-phong-thuy', 'nav-ai', 'nav-user'];
+        const activeClass = 'text-[#fbbf24]'; // Màu vàng
+        const inactiveClass = 'text-[#94a3b8]'; // Màu xám
+
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.classList.remove(activeClass);
+                el.classList.add(inactiveClass);
+            }
+        });
+
+        let activeId = 'nav-home';
+        if (state.currentGroup === 'TU_VI_GROUP') activeId = 'nav-tu-vi';
+        else if (state.currentGroup === 'PHONG_THUY_GROUP') activeId = 'nav-phong-thuy';
+        else if (state.currentView === 'ASSISTANT') activeId = 'nav-ai';
+        // Tab Cá nhân không bao giờ active lâu, chỉ mở menu
+
+        const activeEl = document.getElementById(activeId);
+        if(activeEl) {
+            activeEl.classList.remove(inactiveClass);
+            activeEl.classList.add(activeClass);
         }
     },
 
