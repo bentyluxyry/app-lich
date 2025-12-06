@@ -423,8 +423,8 @@ const app = {
     // Mới: Cập nhật màu sắc cho Bottom Nav
     updateBottomNavState: () => {
         const ids = ['nav-home', 'nav-tu-vi', 'nav-phong-thuy', 'nav-ai', 'nav-user'];
-        const activeClass = 'text-[#fbbf24]'; // Màu vàng
-        const inactiveClass = 'text-[#94a3b8]'; // Màu xám
+        const activeClass = 'text-green-600'; // Màu Xanh lá (Thay vì Vàng)
+        const inactiveClass = 'text-gray-500'; // Màu Xám
 
         ids.forEach(id => {
             const el = document.getElementById(id);
