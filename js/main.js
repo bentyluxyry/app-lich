@@ -5,6 +5,7 @@ import { BlogService } from './service.js';
 import { renderFortune, handleFortuneCheck } from './fortune.js';
 import { renderHeroSection } from './components/hero.js'; 
 import { UserService } from './user.js'; 
+import { renderLogos } from './components/logo.js'; // Import component Logo
 
 // --- CONFIGURATION ---
 const GROUP_MAPPING = {
@@ -185,6 +186,7 @@ const app = {
     init: () => {
         app.initTheme(); // Khởi tạo theme
         initAI();
+        renderLogos(); // Hiển thị Logo
         state.currentUser = UserService.getCurrentUser();
 
         document.addEventListener('click', (e) => {
@@ -229,6 +231,7 @@ const app = {
             document.documentElement.classList.add('dark');
             localStorage.setItem('theme', 'dark');
         }
+        renderLogos(); // Render lại logo khi đổi theme (cho Desktop Header)
     },
 
     render: () => {
@@ -420,11 +423,11 @@ const app = {
         app.toggleMenu();
     },
 
-    // Mới: Cập nhật màu sắc cho Bottom Nav
+    // Mới: Cập nhật màu sắc cho Bottom Nav (Dark Navy Theme)
     updateBottomNavState: () => {
         const ids = ['nav-home', 'nav-tu-vi', 'nav-phong-thuy', 'nav-ai', 'nav-user'];
-        const activeClass = 'text-green-600'; // Màu Xanh lá (Thay vì Vàng)
-        const inactiveClass = 'text-gray-500'; // Màu Xám
+        const activeClass = 'text-green-400'; // Active = Xanh sáng trên nền tối
+        const inactiveClass = 'text-gray-400'; // Inactive = Xám
 
         ids.forEach(id => {
             const el = document.getElementById(id);
