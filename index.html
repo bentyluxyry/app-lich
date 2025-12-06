@@ -310,32 +310,37 @@
         </div>
     </div>
 
-    <!-- Search Modal (UPDATED DESIGN: PILL SHAPE) -->
-    <div id="search-modal" class="fixed inset-0 bg-slate-900/95 backdrop-blur-sm z-[80] hidden flex flex-col items-center pt-6 transition-all duration-300">
-        <div class="w-full max-w-lg px-4 animate-fade-in">
-            <div class="relative flex items-center gap-3">
-                <!-- Search Input Pill -->
+    <!-- Search Modal (UPDATED DESIGN: FIXED TOP HEADER STYLE) -->
+    <div id="search-modal" class="fixed inset-0 z-[80] hidden">
+        <!-- Semi-transparent backdrop (cho phép nhìn thấy nội dung bên dưới, không che toàn bộ) -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity" onclick="app.toggleSearch()"></div>
+        
+        <!-- Search Bar Wrapper (Top aligned) -->
+        <div class="relative w-full bg-slate-900 p-2 md:p-4 shadow-2xl animate-fade-in border-b border-slate-800">
+            <div class="max-w-screen-2xl mx-auto flex items-center gap-3">
+                
+                <!-- Input Container (Pill Shape) -->
                 <div class="relative flex-1 group">
                     <input id="search-input" type="text" 
-                           class="w-full bg-white text-gray-900 rounded-full pl-5 pr-12 py-3.5 focus:outline-none focus:ring-4 focus:ring-green-500/30 transition-all font-medium text-base shadow-lg" 
+                           class="w-full bg-white text-gray-900 rounded-full pl-5 pr-12 py-3 focus:outline-none focus:ring-4 focus:ring-green-500/30 transition-all font-medium text-base shadow-inner" 
                            placeholder="Nhập từ khóa tìm kiếm..." 
                            onkeyup="app.handleSearchInput(this.value)">
                     
-                    <!-- Search Icon (Right side of Input) -->
-                    <div class="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-100 text-gray-500 p-2 rounded-full cursor-pointer hover:bg-green-100 hover:text-green-600 transition-colors" onclick="document.getElementById('search-input').focus()">
+                    <!-- Search Icon (Inside Input Right) -->
+                    <div class="absolute right-1 top-1/2 -translate-y-1/2 p-2 bg-gray-100 rounded-full text-gray-500 cursor-pointer hover:text-green-600 transition-colors" onclick="document.getElementById('search-input').focus()">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
 
-                <!-- Close Button (Separate) -->
-                <button onclick="app.toggleSearch()" class="text-white bg-slate-800 p-3.5 rounded-full hover:bg-slate-700 hover:text-red-400 transition-colors shadow-lg border border-slate-700">
+                <!-- Close Button (X) - Outside -->
+                <button onclick="app.toggleSearch()" class="text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-3 rounded-full transition-colors shrink-0 border border-slate-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
 
-            <!-- Search Results -->
-            <div id="search-results" class="mt-4 max-h-[60vh] overflow-y-auto space-y-2 rounded-2xl shadow-2xl">
-                <!-- Results injected here -->
+            <!-- Search Results Container (Attached below input) -->
+            <div id="search-results" class="hidden mt-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg max-h-[60vh] overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-700 mx-auto max-w-screen-2xl">
+                <!-- Content injected by JS -->
             </div>
         </div>
     </div>

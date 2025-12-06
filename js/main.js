@@ -578,10 +578,47 @@ const app = {
         }
     },
 
-    toggleSearch: () => { document.getElementById('search-modal').classList.toggle('hidden'); document.getElementById('search-input').focus(); },
+    toggleSearch: () => { 
+        const modal = document.getElementById('search-modal');
+        const input = document.getElementById('search-input');
+        const results = document.getElementById('search-results');
+        
+        modal.classList.toggle('hidden');
+        
+        if (!modal.classList.contains('hidden')) {
+            // Khi mở: Focus vào input
+            setTimeout(() => input.focus(), 100);
+        } else {
+            // Khi đóng: Reset
+            input.value = '';
+            results.classList.add('hidden');
+            results.innerHTML = '';
+        }
+    },
+
     handleSearchInput: (k) => {
+        const container = document.getElementById('search-results');
+        if (!k.trim()) {
+            container.classList.add('hidden');
+            return;
+        }
+
         const res = BlogService.searchPosts(k);
-        document.getElementById('search-results').innerHTML = res.length ? res.map(p => `<div onclick="app.viewPost('${p.slug}'); app.toggleSearch()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700">${p.title}</div>`).join('') : '<div class="text-gray-500 dark:text-gray-400 p-2">Không tìm thấy</div>';
+        container.classList.remove('hidden');
+        
+        if (res.length) {
+            container.innerHTML = res.map(p => `
+                <div onclick="app.viewPost('${p.slug}'); app.toggleSearch()" class="flex items-start gap-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                    <img src="${p.image}" class="w-12 h-12 object-cover rounded flex-shrink-0">
+                    <div>
+                        <div class="text-sm font-bold text-gray-800 dark:text-gray-200 line-clamp-1">${p.title}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">${p.excerpt}</div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="text-gray-500 dark:text-gray-400 p-4 text-center text-sm italic">Không tìm thấy kết quả phù hợp</div>';
+        }
     },
 
     saveApiKey: () => { const k = document.getElementById('api-key-input').value; if(setApiKey(k)) app.render(); },
