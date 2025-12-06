@@ -6,6 +6,7 @@ import { renderFortune, handleFortuneCheck } from './fortune.js';
 import { renderHeroSection } from './components/hero.js'; 
 import { UserService } from './user.js'; 
 import { renderLogos } from './components/logo.js'; // Import component Logo
+import { ViewService } from './services/viewService.js'; // Import ViewService
 
 // --- CONFIGURATION ---
 const GROUP_MAPPING = {
@@ -345,6 +346,9 @@ const app = {
             post = BlogService.getPostById(slugOrId);
         }
         if (post) {
+            // TĂNG LƯỢT XEM KHI MỞ BÀI VIẾT
+            ViewService.incrementView(post.id);
+
             state.viewingPost = post;
             state.currentView = 'BLOG';
             state.currentCategory = null; 
