@@ -421,16 +421,22 @@ const app = {
 
     toggleSubMenu: (id) => {
         const sub = document.getElementById(`m-sub-${id}`);
-        const arrow = document.getElementById(`m-arrow-${id}`);
+        const icon = document.getElementById(`m-icon-${id}`);
         if(sub) {
             if(sub.classList.contains('max-h-0')) {
                 sub.classList.remove('max-h-0', 'hidden');
                 sub.classList.add('max-h-[500px]');
-                if(arrow) arrow.style.transform = 'rotate(180deg)';
+                if(icon) {
+                    icon.innerHTML = '-'; // Chuyển dấu + thành -
+                    icon.classList.add('text-green-500');
+                }
             } else {
                 sub.classList.add('max-h-0');
                 sub.classList.remove('max-h-[500px]');
-                if(arrow) arrow.style.transform = 'rotate(0deg)';
+                if(icon) {
+                    icon.innerHTML = '+'; // Chuyển dấu - thành +
+                    icon.classList.remove('text-green-500');
+                }
             }
         }
     },
@@ -564,30 +570,30 @@ function renderMobileMenu() {
     const m = document.getElementById('mobile-menu');
     if (!m) return;
     
-    // Header của Sidebar Menu
+    // Header Dark Mode
     let html = `
-    <div class="bg-[#1a1a1a] text-white p-4 flex justify-between items-center shadow-md">
+    <!-- Header -->
+    <div class="p-4 flex justify-between items-center bg-white shadow-sm border-b border-gray-100">
         <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-green-600 rounded flex items-center justify-center font-bold text-lg">L</div>
-            <span class="font-bold text-lg tracking-tight">LịchViệt.AI</span>
+             <div class="w-8 h-8 bg-green-600 rounded text-white flex items-center justify-center font-bold text-lg">L</div>
+             <span class="font-bold text-xl text-green-700 tracking-tight">LịchViệt.AI</span>
         </div>
-        <button onclick="app.closeMenu()" class="text-gray-400 hover:text-white p-1">
+        <button onclick="app.closeMenu()" class="text-gray-800 hover:text-red-500 transition">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
     </div>
-    <div class="bg-gray-100 p-4 border-b border-gray-200">
-         <div class="flex items-center gap-3">
-             <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-             </div>
-             <div>
-                 <div class="font-bold text-gray-800 text-sm">Xin chào, Khách</div>
-                 <div class="text-xs text-green-600 cursor-pointer">Đăng nhập / Đăng ký</div>
-             </div>
-         </div>
-    </div>
-    <div class="flex-1 overflow-y-auto">
-        <div class="py-2">
+
+    <div class="bg-[#1a1a1a] flex-1 overflow-y-auto text-white">
+        
+        <!-- Social Icons (Mô phỏng Unitheme) -->
+        <div class="px-5 py-6 flex gap-3 border-b border-gray-800">
+            <a href="#" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-blue-600 transition text-gray-400 hover:text-white">f</a>
+            <a href="#" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-red-600 transition text-gray-400 hover:text-white">y</a>
+            <a href="#" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-blue-700 transition text-gray-400 hover:text-white">in</a>
+        </div>
+
+        <!-- Menu List -->
+        <div class="flex flex-col">
     `;
 
     // Render danh sách menu
@@ -597,32 +603,32 @@ function renderMobileMenu() {
                 ? `${item.directAction}; app.closeMenu()` 
                 : `app.toggleSubMenu('${item.id}')`;
             
+            // Style kiểu Unitheme: Chữ in hoa, đậm, ngăn cách bởi border tối
             return `
-            <div class="border-b border-gray-100 last:border-none">
-                <div class="flex justify-between items-center px-4 py-3 hover:bg-gray-50 cursor-pointer transition" onclick="${textClick}">
-                    <span class="font-bold text-gray-800 text-sm">${item.label}</span>
-                    <span onclick="event.stopPropagation(); app.toggleSubMenu('${item.id}')" class="p-2 -mr-2 text-gray-400">
-                        <svg id="m-arrow-${item.id}" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </span>
+            <div class="border-b border-gray-800">
+                <div class="flex justify-between items-center px-5 py-4 cursor-pointer hover:bg-[#252525] transition select-none group" onclick="${textClick}">
+                    <span class="font-bold text-sm uppercase tracking-wider">${item.label}</span>
+                    <span onclick="event.stopPropagation(); app.toggleSubMenu('${item.id}')" class="text-gray-500 text-lg leading-none font-light group-hover:text-white w-6 text-center" id="m-icon-${item.id}">+</span>
                 </div>
-                <div id="m-sub-${item.id}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-gray-50">
+                <div id="m-sub-${item.id}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-[#202020]">
                     ${item.children.map(sub => {
                          const handler = sub.type === 'view' ? `app.navigate('${sub.id}')` : `app.filterBlog('${sub.id}')`;
-                         return `<div onclick="${handler}; app.closeMenu()" class="block pl-8 pr-4 py-3 text-sm font-medium text-gray-600 hover:text-green-700 cursor-pointer border-t border-gray-100/50">${sub.label}</div>`;
+                         return `<div onclick="${handler}; app.closeMenu()" class="block pl-8 pr-5 py-3 text-sm text-gray-400 hover:text-green-500 hover:pl-10 transition-all cursor-pointer border-t border-gray-800/50">${sub.label}</div>`;
                     }).join('')}
                 </div>
             </div>`;
         }
         return `
-        <div onclick="app.navigate('${item.id}'); app.closeMenu()" class="border-b border-gray-100 last:border-none px-4 py-3 font-bold text-gray-800 text-sm hover:bg-gray-50 cursor-pointer">
+        <div onclick="app.navigate('${item.id}'); app.closeMenu()" class="border-b border-gray-800 px-5 py-4 font-bold text-sm uppercase tracking-wider hover:bg-[#252525] cursor-pointer transition">
             ${item.label}
         </div>`;
     }).join('');
 
+    // Footer Copyright trong menu
     html += `
         </div>
-        <div class="p-4 mt-2">
-            <button onclick="app.scrollToFooter(); app.closeMenu()" class="w-full border border-gray-300 rounded-lg py-2 text-sm text-gray-600 font-medium hover:border-green-500 hover:text-green-600 transition">Liên hệ & Hỗ trợ</button>
+        <div class="p-6 text-center text-xs text-gray-600 mt-4">
+            &copy; 2025 Lịch Vạn Niên & Trợ Lý AI.<br>Powered by Google Gemini.
         </div>
     </div>`;
     
