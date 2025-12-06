@@ -25,10 +25,21 @@ const getCatMeta = (code) => {
     return map[code] || { name: 'Tin Tức', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' };
 };
 
-export const renderHeroSection = () => {
-    const allPosts = BlogService.getAllPosts();
-    // 1. Kiểm tra dữ liệu đầu vào (Safe guard)
-    if (!allPosts || !Array.isArray(allPosts) || allPosts.length === 0) return '';
+/**
+ * Render Hero Section
+ * @param {string[]} filterCategories - Mảng các mã danh mục để lọc (VD: ['TU_VI', 'THAN_SO_HOC']). Nếu null thì lấy tất cả.
+ * @param {string} sectionTitle - Tiêu đề hiển thị (VD: "Tin Mới Nhất" hoặc "Tiêu Điểm Tử Vi")
+ */
+export const renderHeroSection = (filterCategories = null, sectionTitle = "Tin Mới Nhất") => {
+    let allPosts = BlogService.getAllPosts();
+    
+    // 1. Lọc theo danh mục nếu có yêu cầu (Cho các trang con)
+    if (filterCategories && filterCategories.length > 0) {
+        allPosts = allPosts.filter(p => filterCategories.includes(p.category));
+    }
+
+    // Guard: Nếu không có bài nào
+    if (!allPosts || allPosts.length === 0) return '';
 
     // 2. Sắp xếp toàn bộ theo thời gian mới nhất trước
     const sortedPosts = [...allPosts].sort((a, b) => parseDate(b.date) - parseDate(a.date));
@@ -45,7 +56,7 @@ export const renderHeroSection = () => {
         heroItems = heroItems.slice(0, 3);
     }
 
-    // Guard: Nếu vẫn không đủ bài
+    // Guard: Nếu vẫn không đủ bài (ít nhất phải có 1 bài)
     if (heroItems.length < 1) return '';
 
     const mainPost = heroItems[0];
@@ -64,7 +75,6 @@ export const renderHeroSection = () => {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
             
             <!-- CỘT 1: BÀI CHÍNH (Chiếm 6/12) -->
-            <!-- Aspect-video giữ tỷ lệ 16:9, đây là cột quy định chiều cao cho cả hàng trên Desktop -->
             <div class="lg:col-span-6 group cursor-pointer h-full" onclick="app.viewPost('${mainPost.slug}')">
                 <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-gray-700 h-full">
                     <img src="${mainPost.image}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="${mainPost.title}">
@@ -89,10 +99,9 @@ export const renderHeroSection = () => {
             </div>
 
             <!-- CỘT 2: 2 BÀI PHỤ (Chiếm 3/12) -->
-            <!-- Flex col + h-full để giãn đều theo chiều cao của Cột 1 -->
             <div class="lg:col-span-3 flex flex-col gap-5 h-full">
                 
-                <!-- Sub 1: flex-1 để chiếm 50% chiều cao -->
+                <!-- Sub 1 -->
                 <div class="relative flex-1 rounded-2xl overflow-hidden shadow-sm group cursor-pointer border border-gray-100 dark:border-gray-700 min-h-[160px]" onclick="app.viewPost('${subPost1.slug}')">
                     <img src="${subPost1.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${subPost1.title}">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
@@ -104,7 +113,7 @@ export const renderHeroSection = () => {
                     </div>
                 </div>
 
-                <!-- Sub 2: flex-1 để chiếm 50% chiều cao -->
+                <!-- Sub 2 -->
                 <div class="relative flex-1 rounded-2xl overflow-hidden shadow-sm group cursor-pointer border border-gray-100 dark:border-gray-700 min-h-[160px]" onclick="app.viewPost('${subPost2.slug}')">
                     <img src="${subPost2.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${subPost2.title}">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
@@ -118,8 +127,7 @@ export const renderHeroSection = () => {
 
             </div>
 
-            <!-- CỘT 3: TIN MỚI NHẤT (Chiếm 3/12) -->
-            <!-- h-full để bằng chiều cao Cột 1 -->
+            <!-- CỘT 3: DANH SÁCH (Chiếm 3/12) -->
             <div class="lg:col-span-3 h-[400px] lg:h-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden transition-colors">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/50 dark:bg-gray-700/30">
                     <h3 class="font-black text-gray-800 dark:text-white uppercase text-xs tracking-wider flex items-center gap-2">
@@ -127,7 +135,7 @@ export const renderHeroSection = () => {
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                         </span>
-                        Tin Mới Nhất
+                        ${sectionTitle}
                     </h3>
                 </div>
                 
@@ -150,12 +158,6 @@ export const renderHeroSection = () => {
                             </div>
                         `}).join('')}
                     </div>
-                </div>
-                
-                <div class="p-3 border-t border-gray-100 dark:border-gray-700 text-center bg-gray-50/30 dark:bg-gray-700/20">
-                     <button onclick="app.navigate('BLOG')" class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase hover:text-green-600 dark:hover:text-green-400 transition flex items-center justify-center gap-1 w-full">
-                        Xem tất cả tin <span class="text-lg leading-none">›</span>
-                     </button>
                 </div>
             </div>
 
