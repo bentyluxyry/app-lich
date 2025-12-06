@@ -1,7 +1,8 @@
 
 export default { 
     id: 12, 
-    featured: true, // Ưu tiên hiển thị Hero
+    featured: true, // true và false Ưu tiên hiển thị Hero
+	isPremium: false, // true và false ĐÁNH DẤU LÀ BÀI VIẾT CÓ KHÓA
     category: "LE_TET", 
     title: "Tổng hợp lịch nghỉ Lễ, Tết năm 2025 chi tiết nhất", 
     excerpt: "Năm 2025 có bao nhiêu ngày nghỉ lễ? Lịch nghỉ 30/4 - 1/5 và Quốc Khánh 2/9 như thế nào? Cùng lên kế hoạch du lịch sớm.", 

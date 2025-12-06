@@ -31,6 +31,12 @@ body {
     border-bottom-left-radius: 2px;
 }
 
+/* Dark Mode for Chat Bubbles (Custom overrides if needed) */
+html.dark .chat-bubble-model {
+    background-color: #374151;
+    color: #e5e7eb;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
@@ -44,6 +50,14 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #9ca3af; 
+}
+
+/* Dark Mode Scrollbar */
+html.dark ::-webkit-scrollbar-thumb {
+    background: #4b5563; 
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; 
 }
 
 /* Custom Grid for Calendar */

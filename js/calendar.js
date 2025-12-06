@@ -1,3 +1,4 @@
+
 /* --- THUẬT TOÁN ÂM LỊCH VIỆT NAM (HỒ NGỌC ĐỨC) --- */
 const PI = Math.PI;
 
@@ -215,30 +216,30 @@ export function renderDailyDetailHTML(date) {
     const weekDay = formatWeekDay(date);
 
     return `
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden font-sans">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden font-sans">
         <div class="flex flex-col md:flex-row h-full">
-            <div class="flex-1 p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col items-center justify-center relative">
-                <button onclick="app.changeDate(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-gray-200 hover:border-green-500 hover:text-green-600 flex items-center justify-center transition">❮</button>
+            <div class="flex-1 p-8 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center relative bg-white dark:bg-gray-800 transition-colors">
+                <button onclick="app.changeDate(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-gray-200 dark:border-gray-600 dark:text-gray-300 hover:border-green-500 hover:text-green-600 flex items-center justify-center transition">❮</button>
                 <div class="flex items-center gap-2 mb-2">
                     <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center">☀</span>
-                    <span class="text-gray-500 font-bold text-xs uppercase tracking-widest">Dương Lịch</span>
+                    <span class="text-gray-500 dark:text-gray-400 font-bold text-xs uppercase tracking-widest">Dương Lịch</span>
                 </div>
-                <div class="text-[120px] leading-none font-bold text-green-600 font-sans my-2 tracking-tighter">${info.gregorian.getDate()}</div>
-                <div class="text-xl text-gray-600 font-medium">Tháng ${info.gregorian.getMonth() + 1} năm ${info.gregorian.getFullYear()}</div>
-                <div class="mt-2 text-green-600 font-bold text-2xl capitalize">${weekDay}</div>
+                <div class="text-[120px] leading-none font-bold text-green-600 dark:text-green-400 font-sans my-2 tracking-tighter">${info.gregorian.getDate()}</div>
+                <div class="text-xl text-gray-600 dark:text-gray-300 font-medium">Tháng ${info.gregorian.getMonth() + 1} năm ${info.gregorian.getFullYear()}</div>
+                <div class="mt-2 text-green-600 dark:text-green-400 font-bold text-2xl capitalize">${weekDay}</div>
             </div>
-            <div class="flex-1 p-8 flex flex-col items-center justify-center relative bg-gray-50/50">
-                <button onclick="app.changeDate(1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-gray-200 hover:border-green-500 hover:text-green-600 flex items-center justify-center transition">❯</button>
+            <div class="flex-1 p-8 flex flex-col items-center justify-center relative bg-gray-50/50 dark:bg-gray-900 transition-colors">
+                <button onclick="app.changeDate(1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-gray-200 dark:border-gray-600 dark:text-gray-300 hover:border-green-500 hover:text-green-600 flex items-center justify-center transition">❯</button>
                 <div class="flex items-center gap-2 mb-2">
-                     <span class="w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center">🌙</span>
-                     <span class="text-gray-500 font-bold text-xs uppercase tracking-widest">Âm Lịch</span>
+                     <span class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 flex items-center justify-center">🌙</span>
+                     <span class="text-gray-500 dark:text-gray-400 font-bold text-xs uppercase tracking-widest">Âm Lịch</span>
                 </div>
-                <div class="text-[120px] leading-none font-bold text-gray-800 font-sans my-2 tracking-tighter">${info.lunar.day}</div>
-                <div class="text-xl text-gray-800 font-medium text-center">Tháng ${info.lunar.month} ${info.lunar.isLeap ? '(Nhuận)' : ''} - Năm ${info.lunar.yearName}</div>
-                <div class="mt-2 text-gray-600">Ngày ${info.lunar.dayName}</div>
+                <div class="text-[120px] leading-none font-bold text-gray-800 dark:text-white font-sans my-2 tracking-tighter">${info.lunar.day}</div>
+                <div class="text-xl text-gray-800 dark:text-gray-200 font-medium text-center">Tháng ${info.lunar.month} ${info.lunar.isLeap ? '(Nhuận)' : ''} - Năm ${info.lunar.yearName}</div>
+                <div class="mt-2 text-gray-600 dark:text-gray-400">Ngày ${info.lunar.dayName}</div>
             </div>
         </div>
-        <div class="bg-gray-50 p-6 border-t border-gray-200 text-sm grid gap-2 grid-cols-1 md:grid-cols-2">
+        <div class="bg-gray-50 dark:bg-gray-900 p-6 border-t border-gray-200 dark:border-gray-700 text-sm grid gap-2 grid-cols-1 md:grid-cols-2 text-gray-700 dark:text-gray-300 transition-colors">
             <div><span class="font-bold">Giờ Hoàng Đạo:</span> ${info.zodiacHours.split(',').slice(0,3).join(', ')}...</div>
             <div><span class="font-bold">Ngũ Hành:</span> ${info.element}</div>
             <div class="md:col-span-2"><span class="font-bold">Tuổi xung:</span> ${info.conflictingAge}</div>
@@ -250,17 +251,17 @@ export function renderCalendarGridHTML(date) {
     const grid = generateMonthGrid(date.getFullYear(), date.getMonth());
     const weekDays = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
     return `
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-         <div class="flex justify-between items-center p-4 border-b border-gray-100">
-            <div class="flex gap-2">
-                <button onclick="app.changeMonth(-1)" class="hover:bg-gray-100 p-1 rounded">❮</button>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+         <div class="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700">
+            <div class="flex gap-2 text-gray-800 dark:text-white">
+                <button onclick="app.changeMonth(-1)" class="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded">❮</button>
                 <span class="font-bold text-lg">Tháng ${date.getMonth() + 1} - ${date.getFullYear()}</span>
-                <button onclick="app.changeMonth(1)" class="hover:bg-gray-100 p-1 rounded">❯</button>
+                <button onclick="app.changeMonth(1)" class="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded">❯</button>
             </div>
-            <button onclick="app.selectDate(new Date().toISOString())" class="bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded">Hôm nay</button>
+            <button onclick="app.selectDate(new Date().toISOString())" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded">Hôm nay</button>
          </div>
-         <div class="grid grid-cols-7 border-b border-gray-100 bg-gray-50">
-             ${weekDays.map((d, i) => `<div class="py-3 text-center text-xs font-bold text-gray-500 uppercase ${i===6 ? 'text-red-500' : ''}">${d}</div>`).join('')}
+         <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 transition-colors">
+             ${weekDays.map((d, i) => `<div class="py-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase ${i===6 ? 'text-red-500 dark:text-red-400' : ''}">${d}</div>`).join('')}
          </div>
          <div class="grid grid-cols-7">
              ${grid.map(day => {
@@ -268,14 +269,14 @@ export function renderCalendarGridHTML(date) {
                 const isToday = day.date.toDateString() === new Date().toDateString();
                 return `
                     <div onclick="app.selectDate('${day.date.toISOString()}')" 
-                         class="min-h-[80px] p-2 border-r border-b border-gray-50 cursor-pointer relative hover:bg-green-50 
-                         ${isSelected ? 'bg-green-100' : 'bg-white'} 
-                         ${!day.isCurrentMonth ? 'opacity-30 bg-gray-50' : ''}">
+                         class="min-h-[80px] p-2 border-r border-b border-gray-50 dark:border-gray-700 cursor-pointer relative hover:bg-green-50 dark:hover:bg-gray-700 transition-colors
+                         ${isSelected ? 'bg-green-100 dark:bg-green-900/40' : 'bg-white dark:bg-gray-800'} 
+                         ${!day.isCurrentMonth ? 'opacity-30 bg-gray-50 dark:bg-gray-900' : ''}">
                          <div class="flex justify-between">
-                             <span class="text-lg font-semibold ${day.date.getDay()===0?'text-red-500':'text-gray-700'}">${day.date.getDate()}</span>
-                             <span class="text-xs ${day.lunar.day===1||day.lunar.day===15?'text-red-500 font-bold':'text-gray-400'}">${day.lunar.day}</span>
+                             <span class="text-lg font-semibold ${day.date.getDay()===0?'text-red-500 dark:text-red-400':'text-gray-700 dark:text-gray-200'}">${day.date.getDate()}</span>
+                             <span class="text-xs ${day.lunar.day===1||day.lunar.day===15?'text-red-500 dark:text-red-400 font-bold':'text-gray-400 dark:text-gray-500'}">${day.lunar.day}</span>
                          </div>
-                         ${day.lunar.isLeap ? '<span class="text-[9px] text-green-600 block text-right">(N)</span>' : ''}
+                         ${day.lunar.isLeap ? '<span class="text-[9px] text-green-600 dark:text-green-400 block text-right">(N)</span>' : ''}
                          ${isToday ? '<div class="absolute bottom-1 right-1 w-2 h-2 bg-green-500 rounded-full"></div>' : ''}
                     </div>`;
              }).join('')}

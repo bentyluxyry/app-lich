@@ -3,19 +3,19 @@ import { AccessControl } from './accessControl.js';
 
 // File này chỉ chứa các hàm Render giao diện cho Blog
 export function renderBlogList(posts, title = "Kiến Thức Phong Thủy") {
-    if (posts.length === 0) return `<div class="text-center py-10 text-gray-500">Chưa có bài viết nào trong mục này.</div>`;
+    if (posts.length === 0) return `<div class="text-center py-10 text-gray-500 dark:text-gray-400">Chưa có bài viết nào trong mục này.</div>`;
     
     return `
         <div class="space-y-6">
             <div class="text-center py-6">
-                <h1 class="text-3xl font-bold text-green-800">${title}</h1>
-                <p class="text-gray-600 mt-2">Cập nhật những thông tin hữu ích mỗi ngày</p>
+                <h1 class="text-3xl font-bold text-green-800 dark:text-green-400">${title}</h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-2">Cập nhật những thông tin hữu ích mỗi ngày</p>
             </div>
             
             <!-- GRID LAYOUT: 3 cột -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 ${posts.map(post => `
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col group h-full relative">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group h-full relative">
                         <!-- PREMIUM BADGE (LOCK ICON) -->
                         ${post.isPremium ? `
                             <div class="absolute top-2 left-2 z-20 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded shadow-md flex items-center gap-1">
@@ -29,16 +29,16 @@ export function renderBlogList(posts, title = "Kiến Thức Phong Thủy") {
                             <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded shadow">${post.date}</div>
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <div class="text-xs font-bold text-green-600 mb-1 uppercase tracking-wide">
+                            <div class="text-xs font-bold text-green-600 dark:text-green-400 mb-1 uppercase tracking-wide">
                                 ${post.category === 'TU_VI' ? 'Tử Vi' : post.category === 'THAN_SO_HOC' ? 'Thần Số Học' : 'Phong Thủy'}
                             </div>
-                            <h3 onclick="app.viewPost('${post.slug}')" class="font-bold text-lg text-gray-800 mb-2 hover:text-green-600 cursor-pointer line-clamp-2 leading-tight">
+                            <h3 onclick="app.viewPost('${post.slug}')" class="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 hover:text-green-600 dark:hover:text-green-400 cursor-pointer line-clamp-2 leading-tight">
                                 ${post.title}
                             </h3>
-                            <p class="text-sm text-gray-500 line-clamp-3 mb-4 flex-1 text-justify">
+                            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4 flex-1 text-justify">
                                 ${post.excerpt}
                             </p>
-                            <button onclick="app.viewPost('${post.slug}')" class="text-green-600 font-semibold text-sm hover:underline self-start flex items-center gap-1">
+                            <button onclick="app.viewPost('${post.slug}')" class="text-green-600 dark:text-green-400 font-semibold text-sm hover:underline self-start flex items-center gap-1">
                                 Xem chi tiết <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </button>
                         </div>
@@ -54,7 +54,7 @@ export function renderBlogDetail(post) {
     const canView = AccessControl.canViewPost(post);
 
     return `
-        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden animate-fade-in h-full">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden animate-fade-in h-full transition-colors">
              
              <!-- KHUNG ẢNH CHÍNH TỶ LỆ 16:9 -->
              <div class="w-full aspect-video relative group">
@@ -84,9 +84,9 @@ export function renderBlogDetail(post) {
              </div>
 
              <!-- NỘI DUNG BÀI VIẾT HOẶC MÀN HÌNH KHÓA -->
-             <div class="p-2 md:p-8 blog-content max-w-none">
+             <div class="p-2 md:p-8 blog-content dark:text-gray-300 max-w-none">
                  ${canView ? 
-                    `${post.content} <div class="blog-quote mt-8">"Vận mệnh nằm trong tay ta, phong thủy chỉ là trợ lực."</div>` 
+                    `${post.content} <div class="blog-quote mt-8 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400">"Vận mệnh nằm trong tay ta, phong thủy chỉ là trợ lực."</div>` 
                     : 
                     AccessControl.getLockScreenHTML(post)
                  }

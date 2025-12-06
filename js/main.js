@@ -36,7 +36,7 @@ const state = {
   countdownInterval: null,
   chatHistory: [],
   currentUser: null,
-  isUserMenuOpen: false // Trạng thái Menu User Desktop
+  isUserMenuOpen: false 
 };
 
 // --- HELPERS ---
@@ -81,20 +81,20 @@ const startCountdown = () => {
     state.countdownInterval = setInterval(update, 1000);
 };
 
-// --- COMPONENT GENERATORS ---
+// --- COMPONENT GENERATORS (HTML Strings with Dark Mode Classes) ---
 const getRelatedPostsHTML = (postId) => {
     const relatedPosts = BlogService.getRelatedPosts(postId);
     return `
-        <div class="bg-white rounded-xl shadow-sm border border-green-200 overflow-hidden">
-            <div class="border-l-4 border-green-600 px-4 py-3 bg-green-50 border-b border-green-100">
-                <h3 class="font-bold text-green-800 uppercase text-sm tracking-wider">Bài viết liên quan</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-green-200 dark:border-green-800 overflow-hidden">
+            <div class="border-l-4 border-green-600 px-4 py-3 bg-green-50 dark:bg-green-900/30 border-b border-green-100 dark:border-green-800">
+                <h3 class="font-bold text-green-800 dark:text-green-300 uppercase text-sm tracking-wider">Bài viết liên quan</h3>
             </div>
-            <div class="divide-y divide-gray-100">
+            <div class="divide-y divide-gray-100 dark:divide-gray-700">
                 ${relatedPosts.map(p => `
-                    <div class="p-3 hover:bg-gray-50 transition cursor-pointer flex gap-3 group" onclick="app.viewPost('${p.slug}')">
+                    <div class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer flex gap-3 group" onclick="app.viewPost('${p.slug}')">
                         <img src="${p.image}" class="w-20 h-16 object-cover rounded-md flex-shrink-0">
                         <div>
-                            <h4 class="text-sm font-medium text-gray-800 group-hover:text-green-600 line-clamp-2 leading-snug">${p.title}</h4>
+                            <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200 group-hover:text-green-600 dark:group-hover:text-green-400 line-clamp-2 leading-snug">${p.title}</h4>
                         </div>
                     </div>
                 `).join('')}
@@ -111,17 +111,17 @@ const getServicesHTML = () => {
         { img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=100&h=100&fit=crop", title: "Xem ngày khai trương", sub: "Hồng phát tài lộc" }
     ];
     return `
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="border-l-4 border-green-600 px-3 py-3 bg-gray-50 border-b border-gray-100">
-                <h3 class="font-bold text-gray-800 uppercase text-sm tracking-wider">Dịch Vụ Chuyên Gia</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="border-l-4 border-green-600 px-3 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600">
+                <h3 class="font-bold text-gray-800 dark:text-gray-100 uppercase text-sm tracking-wider">Dịch Vụ Chuyên Gia</h3>
             </div>
-            <div class="divide-y divide-gray-50">
+            <div class="divide-y divide-gray-50 dark:divide-gray-700">
                 ${services.map(s => `
-                    <div class="p-3 flex items-center gap-3 hover:bg-green-50 transition cursor-pointer group" onclick="app.navigate('KNOWLEDGE')">
+                    <div class="p-3 flex items-center gap-3 hover:bg-green-50 dark:hover:bg-gray-700 transition cursor-pointer group" onclick="app.navigate('KNOWLEDGE')">
                         <img src="${s.img}" class="w-16 h-12 object-cover rounded-md shadow-sm group-hover:scale-105 transition">
                         <div>
-                            <h4 class="font-bold text-gray-800 text-sm group-hover:text-green-700">${s.title}</h4>
-                            <p class="text-xs text-gray-500 mt-0.5">${s.sub}</p>
+                            <h4 class="font-bold text-gray-800 dark:text-gray-200 text-sm group-hover:text-green-700 dark:group-hover:text-green-400">${s.title}</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${s.sub}</p>
                         </div>
                     </div>
                 `).join('')}
@@ -168,11 +168,11 @@ const renderHome = () => {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-8 space-y-8">
                 <div id="daily-section">
-                    <div class="flex items-center gap-2 mb-4 border-l-4 border-green-600 pl-3"><h2 class="text-xl font-bold text-gray-800 uppercase">Lịch Ngày</h2></div>
+                    <div class="flex items-center gap-2 mb-4 border-l-4 border-green-600 pl-3"><h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 uppercase">Lịch Ngày</h2></div>
                     ${renderDailyDetailHTML(state.date)}
                 </div>
                 <div id="calendar-view-container">
-                    <div class="flex items-center gap-2 mb-4 border-l-4 border-green-600 pl-3"><h2 class="text-xl font-bold text-gray-800 uppercase">Lịch Tháng</h2></div>
+                    <div class="flex items-center gap-2 mb-4 border-l-4 border-green-600 pl-3"><h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 uppercase">Lịch Tháng</h2></div>
                     ${renderCalendarGridHTML(state.date)}
                 </div>
             </div>
@@ -184,10 +184,10 @@ const renderHome = () => {
 // --- CONTROLLER ---
 const app = {
     init: () => {
+        app.initTheme(); // Khởi tạo theme
         initAI();
         state.currentUser = UserService.getCurrentUser();
 
-        // Xử lý sự kiện click ra ngoài để đóng User Menu
         document.addEventListener('click', (e) => {
             const container = document.getElementById('user-menu-container');
             const dropdown = document.getElementById('user-menu-dropdown');
@@ -211,6 +211,26 @@ const app = {
         renderNav();
         renderMobileMenu();
         app.updateAuthUI(); 
+    },
+
+    // --- LOGIC THEME ---
+    initTheme: () => {
+        // Kiểm tra localStorage hoặc cấu hình hệ thống
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    },
+
+    toggleTheme: () => {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        }
     },
 
     render: () => {
@@ -380,7 +400,6 @@ const app = {
         if (modal) modal.classList.toggle('hidden');
     },
 
-    // Hàm mới: Bật tắt Menu User (Click thay vì Hover)
     toggleUserMenu: () => {
         const dropdown = document.getElementById('user-menu-dropdown');
         if (dropdown) {
@@ -404,22 +423,22 @@ const app = {
             container.innerHTML = `
                 <div id="user-menu-container" class="relative">
                     <button onclick="app.toggleUserMenu()" class="flex items-center gap-3 focus:outline-none transition opacity-90 hover:opacity-100">
-                        <span class="text-sm font-bold text-gray-700 hidden lg:block select-none">Hi, ${state.currentUser.name}</span>
-                        <img src="${state.currentUser.avatar}" class="w-9 h-9 rounded-full border border-gray-200 object-cover shadow-sm">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200 hidden lg:block select-none">Hi, ${state.currentUser.name}</span>
+                        <img src="${state.currentUser.avatar}" class="w-9 h-9 rounded-full border border-gray-200 dark:border-gray-600 object-cover shadow-sm">
                     </button>
                     
                     <!-- Dropdown Menu (Mặc định ẩn, hiện khi click) -->
-                    <div id="user-menu-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 animate-fade-in z-50 overflow-hidden">
-                        <div class="p-4 border-b border-gray-50 bg-gray-50/50">
-                            <div class="font-bold text-gray-800 truncate">${state.currentUser.name}</div>
-                            <div class="text-xs text-gray-500 truncate">${state.currentUser.email || 'Thành viên'}</div>
+                    <div id="user-menu-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 animate-fade-in z-50 overflow-hidden">
+                        <div class="p-4 border-b border-gray-50 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30">
+                            <div class="font-bold text-gray-800 dark:text-white truncate">${state.currentUser.name}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">${state.currentUser.email || 'Thành viên'}</div>
                         </div>
                         <div class="py-1">
-                             <a onclick="alert('Tính năng đang phát triển')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 cursor-pointer">Thông tin tài khoản</a>
-                             <a onclick="alert('Chức năng đã lưu đang phát triển')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 cursor-pointer">Bài viết đã lưu</a>
+                             <a onclick="alert('Tính năng đang phát triển')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-gray-700 hover:text-green-700 dark:hover:text-green-400 cursor-pointer">Thông tin tài khoản</a>
+                             <a onclick="alert('Chức năng đã lưu đang phát triển')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-gray-700 hover:text-green-700 dark:hover:text-green-400 cursor-pointer">Bài viết đã lưu</a>
                         </div>
-                        <div class="border-t border-gray-100">
-                            <button onclick="app.logout()" class="w-full text-left px-4 py-3 text-sm text-red-600 font-medium hover:bg-red-50 flex items-center gap-2">
+                        <div class="border-t border-gray-100 dark:border-gray-700">
+                            <button onclick="app.logout()" class="w-full text-left px-4 py-3 text-sm text-red-600 dark:text-red-400 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                 Đăng xuất
                             </button>
@@ -430,7 +449,7 @@ const app = {
         } else {
             // Chưa đăng nhập
             container.innerHTML = `
-                <button onclick="app.toggleLogin()" class="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold transition shadow-md">
+                <button onclick="app.toggleLogin()" class="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 dark:bg-green-600 dark:hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-bold transition shadow-md">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     Đăng nhập
                 </button>
@@ -447,7 +466,7 @@ const app = {
         state.currentUser = user;
         app.updateAuthUI();
         app.toggleLogin(); 
-        app.render(); // Render lại trang để mở khóa bài viết nếu đang xem
+        app.render(); 
         alert(`Chào mừng ${user.name} đã quay trở lại!`);
     },
 
@@ -459,7 +478,7 @@ const app = {
         state.currentUser = user;
         app.updateAuthUI();
         app.toggleLogin(); 
-        app.render(); // Render lại trang
+        app.render(); 
         alert(`Kết nối Facebook thành công! Chào ${user.name}.`);
     },
 
@@ -472,7 +491,7 @@ const app = {
         }
     },
 
-    // --- CÁC HÀM UI KHÁC (GIỮ NGUYÊN) ---
+    // --- CÁC HÀM UI KHÁC ---
     toggleFooter: (id) => {
         const el = document.getElementById(id);
         const icon = document.getElementById('icon-' + id);
@@ -516,7 +535,7 @@ const app = {
     toggleSearch: () => { document.getElementById('search-modal').classList.toggle('hidden'); document.getElementById('search-input').focus(); },
     handleSearchInput: (k) => {
         const res = BlogService.searchPosts(k);
-        document.getElementById('search-results').innerHTML = res.length ? res.map(p => `<div onclick="app.viewPost('${p.slug}'); app.toggleSearch()" class="p-2 hover:bg-gray-100 cursor-pointer border-b">${p.title}</div>`).join('') : '<div class="text-gray-500 p-2">Không tìm thấy</div>';
+        document.getElementById('search-results').innerHTML = res.length ? res.map(p => `<div onclick="app.viewPost('${p.slug}'); app.toggleSearch()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700">${p.title}</div>`).join('') : '<div class="text-gray-500 dark:text-gray-400 p-2">Không tìm thấy</div>';
     },
 
     saveApiKey: () => { const k = document.getElementById('api-key-input').value; if(setApiKey(k)) app.render(); },
@@ -604,19 +623,19 @@ function renderNav() {
              const clickAttr = item.directAction ? `onclick="${item.directAction}"` : '';
              return `
                 <div class="relative group h-full flex items-center">
-                    <div ${clickAttr} class="px-3 py-2 rounded-lg cursor-pointer font-medium transition flex items-center gap-1 ${isActive ? 'text-green-700 font-bold' : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'}">
+                    <div ${clickAttr} class="px-3 py-2 rounded-lg cursor-pointer font-medium transition flex items-center gap-1 ${isActive ? 'text-green-700 dark:text-green-400 font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-green-600 hover:bg-gray-50 dark:hover:bg-gray-700'}">
                         ${item.label} <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
-                    <div class="absolute top-full left-0 mt-0 w-56 bg-white border border-gray-100 shadow-xl rounded-lg overflow-hidden hidden group-hover:block z-50 animate-fade-in">
+                    <div class="absolute top-full left-0 mt-0 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-lg overflow-hidden hidden group-hover:block z-50 animate-fade-in">
                         ${item.children.map(sub => {
                             const handler = sub.type === 'view' ? `app.navigate('${sub.id}')` : `app.filterBlog('${sub.id}')`;
-                            return `<div onclick="this.parentElement.style.display='none'; ${handler}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 cursor-pointer border-b border-gray-50 last:border-none font-medium">${sub.label}</div>`;
+                            return `<div onclick="this.parentElement.style.display='none'; ${handler}" class="block px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-gray-700 hover:text-green-700 dark:hover:text-green-400 cursor-pointer border-b border-gray-50 dark:border-gray-700 last:border-none font-medium">${sub.label}</div>`;
                         }).join('')}
                     </div>
                 </div>`;
          }
-         return `<div onclick="app.navigate('${item.id}')" class="px-4 py-2 rounded-lg cursor-pointer font-medium transition ${isActive ? 'bg-green-50 text-green-700 font-bold' : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'}">${item.label}</div>`;
-     }).join('') + `<button onclick="app.toggleSearch()" class="ml-2 p-2 text-gray-400 hover:text-green-600 bg-gray-50 rounded-full hover:bg-green-50 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>`;
+         return `<div onclick="app.navigate('${item.id}')" class="px-4 py-2 rounded-lg cursor-pointer font-medium transition ${isActive ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold' : 'text-gray-600 dark:text-gray-300 hover:text-green-600 hover:bg-gray-50 dark:hover:bg-gray-700'}">${item.label}</div>`;
+     }).join('') + `<button onclick="app.toggleSearch()" class="ml-2 p-2 text-gray-400 dark:text-gray-300 hover:text-green-600 bg-gray-50 dark:bg-gray-700 rounded-full hover:bg-green-50 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>`;
 }
 
 function renderMobileMenu() {
@@ -626,17 +645,23 @@ function renderMobileMenu() {
     // Header Dark Mode
     let html = `
     <!-- Header -->
-    <div class="p-4 flex justify-between items-center bg-white shadow-sm border-b border-gray-100">
+    <div class="p-4 flex justify-between items-center bg-white dark:bg-gray-800 shadow-sm border-b border-gray-100 dark:border-gray-700">
         <div class="flex items-center gap-2">
              <div class="w-8 h-8 bg-green-600 rounded text-white flex items-center justify-center font-bold text-lg">L</div>
-             <span class="font-bold text-xl text-green-700 tracking-tight">LịchViệt.AI</span>
+             <span class="font-bold text-xl text-green-700 dark:text-green-400 tracking-tight">LịchViệt.AI</span>
         </div>
-        <button onclick="app.closeMenu()" class="text-gray-800 hover:text-red-500 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
+        <div class="flex items-center gap-3">
+            <button onclick="app.toggleTheme()" class="text-gray-500 dark:text-yellow-400">
+               <svg id="m-icon-sun" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+               <svg id="m-icon-moon" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+            <button onclick="app.closeMenu()" class="text-gray-800 dark:text-white hover:text-red-500 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
     </div>
 
-    <div class="bg-[#1a1a1a] flex-1 overflow-y-auto text-white">
+    <div class="bg-[#1a1a1a] dark:bg-black flex-1 overflow-y-auto text-white">
         
         <!-- USER INFO ON MOBILE MENU -->
         <div class="p-5 border-b border-gray-800">
@@ -720,7 +745,6 @@ function renderMobileMenu() {
 }
 
 function renderTopBar() {
-    // (Giữ nguyên nội dung TopBar như cũ)
     const container = document.getElementById('top-bar');
     if (!container) return;
     const tags = [
@@ -739,7 +763,7 @@ function renderTopBar() {
                         Xu hướng:
                     </div>
                     ${tags.map(tag => `
-                        <button onclick="${tag.action}" class="px-3 py-1 rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-green-600 hover:border-green-200 transition whitespace-nowrap">
+                        <button onclick="${tag.action}" class="px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:text-green-600 dark:hover:text-green-400 hover:border-green-200 transition whitespace-nowrap">
                             ${tag.label}
                         </button>
                     `).join('')}
@@ -749,18 +773,18 @@ function renderTopBar() {
     let breadcrumbHTML = '';
     if (state.currentView !== 'HOME') {
         breadcrumbHTML = `
-            <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis">
+            <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis">
                 <a onclick="app.navigate('HOME')" class="cursor-pointer hover:text-green-600 flex items-center gap-1">
                     <svg class="w-3.5 h-3.5 mb-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
                     Trang chủ
                 </a>
         `;
         if (state.currentView === 'CALENDAR' || state.currentView === 'DAILY') {
-            breadcrumbHTML += ` <span class="text-gray-300">»</span> <span class="text-gray-700 font-medium">Lịch Vạn Niên</span>`;
+            breadcrumbHTML += ` <span class="text-gray-300 dark:text-gray-600">»</span> <span class="text-gray-700 dark:text-gray-300 font-medium">Lịch Vạn Niên</span>`;
         } else if (state.currentView === 'ASSISTANT') {
-            breadcrumbHTML += ` <span class="text-gray-300">»</span> <span class="text-gray-700 font-medium">Công Cụ</span> <span class="text-gray-300">»</span> <span class="text-gray-700 font-medium">Trợ Lý AI</span>`;
+            breadcrumbHTML += ` <span class="text-gray-300 dark:text-gray-600">»</span> <span class="text-gray-700 dark:text-gray-300 font-medium">Công Cụ</span> <span class="text-gray-300 dark:text-gray-600">»</span> <span class="text-gray-700 dark:text-gray-300 font-medium">Trợ Lý AI</span>`;
         } else if (state.currentView === 'LOVE') {
-            breadcrumbHTML += ` <span class="text-gray-300">»</span> <a onclick="app.filterGroup('FENGSHUI_GROUP')" class="cursor-pointer hover:text-green-600">Phong Thủy - Tử Vi</a> <span class="text-gray-300">»</span> <span class="text-gray-700 font-medium">Bói Tình Duyên</span>`;
+            breadcrumbHTML += ` <span class="text-gray-300 dark:text-gray-600">»</span> <a onclick="app.filterGroup('FENGSHUI_GROUP')" class="cursor-pointer hover:text-green-600">Phong Thủy - Tử Vi</a> <span class="text-gray-300 dark:text-gray-600">»</span> <span class="text-gray-700 dark:text-gray-300 font-medium">Bói Tình Duyên</span>`;
         } else if (state.currentView === 'BLOG') {
              let activeCat = state.currentCategory;
              let activeGroup = state.currentGroup;
@@ -779,7 +803,7 @@ function renderTopBar() {
              if (groupInfo) {
                  const groupAction = groupInfo.groupId || (findGroupByCat(activeCat)?.groupId);
                  const action = groupAction ? `app.filterGroup('${groupAction}')` : `app.navigate('BLOG')`;
-                 breadcrumbHTML += ` <span class="text-gray-300">»</span> <a onclick="${action}" class="cursor-pointer hover:text-green-600">${groupInfo.label}</a>`;
+                 breadcrumbHTML += ` <span class="text-gray-300 dark:text-gray-600">»</span> <a onclick="${action}" class="cursor-pointer hover:text-green-600">${groupInfo.label}</a>`;
              }
              if (activeCat) {
                  let catName = "Danh mục";
@@ -788,17 +812,17 @@ function renderTopBar() {
                  else if(activeCat === 'PHONG_THUY') catName = "Phong Thủy";
                  else if(activeCat === 'VAN_KHAN') catName = "Văn Khấn";
                  else if(activeCat === 'LE_TET') catName = "Ngày Lễ Tết";
-                 breadcrumbHTML += ` <span class="text-gray-300">»</span> <span onclick="app.filterBlog('${activeCat}')" class="cursor-pointer hover:text-green-600">${catName}</span>`;
+                 breadcrumbHTML += ` <span class="text-gray-300 dark:text-gray-600">»</span> <span onclick="app.filterBlog('${activeCat}')" class="cursor-pointer hover:text-green-600">${catName}</span>`;
              }
              if (state.viewingPost) {
-                 breadcrumbHTML += ` <span class="text-gray-300">»</span> <span class="text-gray-900 font-medium truncate max-w-[150px] md:max-w-xs block" title="${state.viewingPost.title}">${state.viewingPost.title}</span>`;
+                 breadcrumbHTML += ` <span class="text-gray-300 dark:text-gray-600">»</span> <span class="text-gray-900 dark:text-gray-200 font-medium truncate max-w-[150px] md:max-w-xs block" title="${state.viewingPost.title}">${state.viewingPost.title}</span>`;
              }
         }
         breadcrumbHTML += `</div>`;
     }
     trendHTML += `
             </div>
-            ${breadcrumbHTML ? `<div class="mt-2 pt-2 border-t border-gray-100">${breadcrumbHTML}</div>` : ''}
+            ${breadcrumbHTML ? `<div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">${breadcrumbHTML}</div>` : ''}
         </div>
     `;
     container.innerHTML = trendHTML;
@@ -810,13 +834,13 @@ function renderAssistantLayout() {
     return `
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
          <div class="lg:col-span-8">
-            <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden h-[600px] flex flex-col">
-                <div class="bg-green-600 p-4 text-white font-bold flex items-center justify-between">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden h-[600px] flex flex-col">
+                <div class="bg-green-600 dark:bg-green-700 p-4 text-white font-bold flex items-center justify-between">
                     <div class="flex items-center gap-2"><span class="text-2xl">🤖</span><div><div>Trợ Lý AI</div><div class="text-xs text-green-100 font-normal">Gemini Pro</div></div></div>
-                    <button onclick="app.resetApiKey()" class="text-xs bg-green-700 px-3 py-1.5 rounded">Cài đặt Key</button>
+                    <button onclick="app.resetApiKey()" class="text-xs bg-green-700 dark:bg-green-800 px-3 py-1.5 rounded">Cài đặt Key</button>
                 </div>
-                ${!hasApiKey() ? `<div class="flex-1 flex flex-col items-center justify-center p-8 text-center"><h3 class="font-bold mb-2">Yêu cầu API Key</h3><input id="api-key-input" type="password" class="border p-2 rounded w-full max-w-sm mb-3" placeholder="API Key..."><button onclick="app.saveApiKey()" class="bg-green-600 text-white px-4 py-2 rounded">Lưu</button></div>` : 
-                `<div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">${msgs}<div id="loading-indicator" class="hidden text-center text-gray-400 text-sm">Đang nhập...</div></div><div class="p-4 border-t flex gap-2"><input id="chat-input" class="flex-1 border rounded-full px-4 py-2" onkeydown="if(event.key==='Enter') app.sendMessage()"><button onclick="app.sendMessage()" class="bg-green-600 text-white p-2 rounded-full">Gửi</button></div>`}
+                ${!hasApiKey() ? `<div class="flex-1 flex flex-col items-center justify-center p-8 text-center"><h3 class="font-bold mb-2 dark:text-white">Yêu cầu API Key</h3><input id="api-key-input" type="password" class="border dark:border-gray-600 dark:bg-gray-700 dark:text-white p-2 rounded w-full max-w-sm mb-3" placeholder="API Key..."><button onclick="app.saveApiKey()" class="bg-green-600 text-white px-4 py-2 rounded">Lưu</button></div>` : 
+                `<div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">${msgs}<div id="loading-indicator" class="hidden text-center text-gray-400 text-sm">Đang nhập...</div></div><div class="p-4 border-t dark:border-gray-700 flex gap-2"><input id="chat-input" class="flex-1 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-full px-4 py-2" onkeydown="if(event.key==='Enter') app.sendMessage()"><button onclick="app.sendMessage()" class="bg-green-600 text-white p-2 rounded-full">Gửi</button></div>`}
             </div>
          </div>
          <div class="lg:col-span-4">${renderSidebar()}</div>
