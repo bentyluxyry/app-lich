@@ -52,7 +52,7 @@
 </script>
     <script>window.process = { env: { API_KEY: '' } };</script>
 </head>
-<body class="bg-gray-50 font-sans text-gray-900 min-h-screen flex flex-col pb-0">
+<body class="bg-gray-50 font-sans text-gray-900 min-h-screen flex flex-col pb-20 md:pb-0">
 
     <!-- Header / Navigation -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -82,41 +82,83 @@
         <!-- Nội dung sẽ được render bởi main.js -->
     </main>
 
-    <!-- Compact Footer -->
-    <footer id="main-footer" class="bg-[#1a1a1a] text-gray-400 mt-auto border-t border-gray-800">
-        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+    <!-- Footer -->
+    <footer id="main-footer" class="bg-[#1a1a1a] text-gray-300 mt-12 border-t border-gray-800">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-24 md:pb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 md:gap-8">
                 
-                <!-- Brand & Copyright -->
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-green-600 rounded text-white flex items-center justify-center font-bold text-sm">L</div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-gray-100 text-sm tracking-tight">LịchViệt.AI</span>
-                        <span class="text-[10px] text-gray-500">© 2025 Powered by Google Gemini</span>
+                <!-- Cột 1: Về chúng tôi (Luôn hiện) -->
+                <div class="space-y-4 py-4 md:py-0 border-b border-gray-800 md:border-none">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-green-600 rounded text-white flex items-center justify-center font-bold">L</div>
+                        <span class="font-bold text-xl text-white">LịchViệt.AI</span>
+                    </div>
+                    <p class="text-sm leading-relaxed text-gray-400">
+                        Ứng dụng tra cứu Lịch Vạn Niên, Phong Thủy và Tử Vi hàng đầu, tích hợp Trợ lý ảo AI giúp bạn giải đáp mọi thắc mắc về đời sống tâm linh.
+                    </p>
+                    <div class="flex gap-4 pt-2">
+                        <a href="#" class="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-green-600 transition text-white">f</a>
+                        <a href="#" class="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-red-600 transition text-white">y</a>
+                        <a href="#" class="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition text-white">in</a>
                     </div>
                 </div>
 
-                <!-- Simple Links -->
-                <div class="flex items-center gap-6 text-xs font-medium">
-                    <a onclick="app.navigate('HOME')" class="hover:text-green-500 cursor-pointer transition">Trang chủ</a>
-                    <a onclick="app.filterBlog('PHONG_THUY')" class="hover:text-green-500 cursor-pointer transition">Phong Thủy</a>
-                    <a onclick="app.navigate('ASSISTANT')" class="hover:text-green-500 cursor-pointer transition">Trợ Lý AI</a>
-                    <a href="#" class="hover:text-green-500 cursor-pointer transition">Liên hệ</a>
+                <!-- Cột 2: Khám phá (Collapsible on Mobile) -->
+                <div class="border-b border-gray-800 md:border-none">
+                    <button onclick="app.toggleFooter('footer-khampha')" class="w-full flex justify-between items-center py-4 md:py-0 md:mb-4 text-white font-bold text-lg uppercase tracking-wider focus:outline-none">
+                        <span>Khám Phá</span>
+                        <span id="icon-footer-khampha" class="md:hidden text-2xl leading-none font-light text-gray-500">+</span>
+                    </button>
+                    <ul id="footer-khampha" class="hidden md:block space-y-2 text-sm pb-4 md:pb-0 transition-all duration-300">
+                        <li><a onclick="app.navigate('CALENDAR')" class="hover:text-green-500 cursor-pointer transition py-1 block">Lịch Âm Dương</a></li>
+                        <li><a onclick="app.navigate('HOME')" class="hover:text-green-500 cursor-pointer transition py-1 block">Xem Ngày Tốt Xấu</a></li>
+                        <li><a onclick="app.filterBlog('TU_VI')" class="hover:text-green-500 cursor-pointer transition py-1 block">Tử Vi 2025</a></li>
+                        <li><a onclick="app.filterBlog('PHONG_THUY')" class="hover:text-green-500 cursor-pointer transition py-1 block">Phong Thủy Nhà Ở</a></li>
+                        <li><a onclick="app.filterBlog('VAN_KHAN')" class="hover:text-green-500 cursor-pointer transition py-1 block">Văn Khấn Cổ Truyền</a></li>
+                    </ul>
                 </div>
 
-                <!-- Socials (Small) -->
-                <div class="flex gap-3">
-                    <a href="#" class="w-7 h-7 rounded bg-gray-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition text-gray-500">
-                        <span class="text-xs font-bold">f</span>
-                    </a>
-                    <a href="#" class="w-7 h-7 rounded bg-gray-800 flex items-center justify-center hover:bg-red-600 hover:text-white transition text-gray-500">
-                        <span class="text-xs font-bold">y</span>
-                    </a>
+                <!-- Cột 3: Tiện ích (Collapsible on Mobile) -->
+                <div class="border-b border-gray-800 md:border-none">
+                    <button onclick="app.toggleFooter('footer-tienich')" class="w-full flex justify-between items-center py-4 md:py-0 md:mb-4 text-white font-bold text-lg uppercase tracking-wider focus:outline-none">
+                        <span>Tiện Ích</span>
+                        <span id="icon-footer-tienich" class="md:hidden text-2xl leading-none font-light text-gray-500">+</span>
+                    </button>
+                    <ul id="footer-tienich" class="hidden md:block space-y-2 text-sm pb-4 md:pb-0 transition-all duration-300">
+                        <li><a onclick="app.navigate('ASSISTANT')" class="hover:text-green-500 cursor-pointer transition py-1 block">Trợ Lý AI Chat</a></li>
+                        <li><a onclick="app.navigate('LOVE')" class="hover:text-green-500 cursor-pointer transition py-1 block">Bói Tình Duyên</a></li>
+                        <li><a onclick="app.filterBlog('THAN_SO_HOC')" class="hover:text-green-500 cursor-pointer transition py-1 block">Tra Cứu Thần Số Học</a></li>
+                        <li><a onclick="app.navigate('CALENDAR')" class="hover:text-green-500 cursor-pointer transition py-1 block">Đổi Ngày Âm Dương</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Liên hệ (Collapsible on Mobile) -->
+                <div class="border-b border-gray-800 md:border-none">
+                    <button onclick="app.toggleFooter('footer-lienhe')" class="w-full flex justify-between items-center py-4 md:py-0 md:mb-4 text-white font-bold text-lg uppercase tracking-wider focus:outline-none">
+                        <span>Liên Hệ</span>
+                        <span id="icon-footer-lienhe" class="md:hidden text-2xl leading-none font-light text-gray-500">+</span>
+                    </button>
+                    <ul id="footer-lienhe" class="hidden md:block space-y-3 text-sm pb-4 md:pb-0 transition-all duration-300">
+                        <li class="flex items-start gap-3 py-1">
+                            <svg class="w-5 h-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span>Tầng 5, Tòa nhà Tech, Hà Nội</span>
+                        </li>
+                        <li class="flex items-center gap-3 py-1">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span>contact@lichviet.ai</span>
+                        </li>
+                        <li class="flex items-center gap-3 py-1">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <span>+84 987 654 321</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
+            
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center text-sm text-gray-500">
+                <p>&copy; 2025 Lịch Vạn Niên & Trợ Lý AI. Powered by Google Gemini.</p>
+            </div>
         </div>
-        <!-- Spacer for Mobile Bottom Nav -->
-        <div class="h-16 md:hidden bg-[#1a1a1a]"></div>
     </footer>
 
     <!-- Mobile Sidebar Menu (Drawer from Left) -->
