@@ -399,6 +399,14 @@ const app = {
         }
     },
 
+    // Mở popup đăng nhập
+    toggleLogin: () => {
+        const modal = document.getElementById('login-modal');
+        if (modal) {
+            modal.classList.toggle('hidden');
+        }
+    },
+
     // Xử lý đóng mở Footer trên Mobile
     toggleFooter: (id) => {
         const el = document.getElementById(id);
@@ -587,9 +595,22 @@ function renderMobileMenu() {
         
         <!-- Social Icons (Mô phỏng Unitheme) -->
         <div class="px-5 py-6 flex gap-3 border-b border-gray-800">
-            <a href="#" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-blue-600 transition text-gray-400 hover:text-white">f</a>
-            <a href="#" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-red-600 transition text-gray-400 hover:text-white">y</a>
-            <a href="#" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-blue-700 transition text-gray-400 hover:text-white">in</a>
+            <!-- Facebook -->
+            <a href="https://facebook.com" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#1877F2] transition text-gray-400 hover:text-white" title="Facebook">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <!-- TikTok -->
+            <a href="https://tiktok.com" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-black hover:border hover:border-gray-700 transition text-gray-400 hover:text-white" title="TikTok">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93v6.16c0 2.52-1.12 4.88-2.91 6.52-1.78 1.63-4.15 2.51-6.55 2.52-2.5-.02-4.96-1.05-6.66-2.92S-.25 15.98 0 13.52c.24-2.46 1.4-4.8 3.23-6.44a8.68 8.68 0 0 1 2.7-1.53v4.43c-.7.16-1.37.49-1.92.95a4.29 4.29 0 0 0-1.48 3.27 4.29 4.29 0 0 0 2.96 4.1 4.29 4.29 0 0 0 4.6-2.09c.75-1.19.98-2.61.9-4v-12.2z"/></svg>
+            </a>
+            <!-- YouTube -->
+            <a href="https://youtube.com" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#FF0000] transition text-gray-400 hover:text-white" title="YouTube">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <!-- Zalo -->
+            <a href="https://zalo.me" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#0068FF] transition text-gray-400 hover:text-white font-bold text-xs" title="Zalo">
+                Zalo
+            </a>
         </div>
 
         <!-- Menu List -->
