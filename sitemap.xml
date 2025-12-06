@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Trang chủ -->
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Các trang chức năng chính -->
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=CALENDAR</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=BLOG</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=LOVE</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=KNOWLEDGE</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Bài viết Blog (Nên cập nhật thêm khi viết bài mới) -->
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=BLOG&amp;id=7</loc>
+    <lastmod>2025-02-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=BLOG&amp;id=6</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://bentyluxyry.github.io/app-lich/?view=BLOG&amp;id=5</loc>
+    <lastmod>2025-01-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
