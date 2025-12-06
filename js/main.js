@@ -1,6 +1,6 @@
 import { initAI, generateContent, setApiKey, hasApiKey } from './ai.js';
 import { getDayInfo, generateMonthGrid, formatWeekDay, renderDailyDetailHTML, renderCalendarGridHTML } from './calendar.js';
-import { renderBlogList, renderBlogDetail } from './blog.js';
+import { renderBlogList, renderBlogDetail, updatePostViewsUI } from './blog.js'; // Import thêm updatePostViewsUI
 import { BlogService } from './service.js';
 import { renderFortune, handleFortuneCheck } from './fortune.js';
 import { renderHeroSection } from './components/hero.js'; 
@@ -206,6 +206,8 @@ const app = {
             state.currentView = view;
             if (view === 'BLOG' && slug) {
                 state.viewingPost = BlogService.getPostBySlug(slug);
+                // Nếu view ngay bài viết từ URL, cũng cần tăng view
+                if(state.viewingPost) ViewService.incrementView(state.viewingPost.id);
             }
         }
         
@@ -309,6 +311,9 @@ const app = {
                     ${renderBlogList(posts, title)}
                 `;
             }
+            // Gọi hàm cập nhật View sau khi render HTML xong
+            setTimeout(() => updatePostViewsUI(), 100);
+
         } else if (state.currentView === 'LOVE') {
             main.innerHTML = `<div class="max-w-4xl mx-auto">${renderFortune()}</div>`;
         } else if (state.currentView === 'ASSISTANT') {
@@ -346,7 +351,7 @@ const app = {
             post = BlogService.getPostById(slugOrId);
         }
         if (post) {
-            // TĂNG LƯỢT XEM KHI MỞ BÀI VIẾT
+            // TĂNG LƯỢT XEM KHI MỞ BÀI VIẾT (GỌI API REAL)
             ViewService.incrementView(post.id);
 
             state.viewingPost = post;

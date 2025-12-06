@@ -1,6 +1,21 @@
 
 import { AccessControl } from './accessControl.js';
-import { ViewService } from './services/viewService.js'; // Import Service mới
+import { ViewService } from './services/viewService.js';
+
+// Hàm cập nhật lượt xem lên giao diện sau khi render xong
+export function updatePostViewsUI() {
+    // Tìm tất cả các thẻ đang chờ hiển thị view
+    const viewElements = document.querySelectorAll('.real-view-count');
+    
+    viewElements.forEach(async (el) => {
+        const id = el.getAttribute('data-id');
+        if (id) {
+            const views = await ViewService.getViews(id);
+            el.innerText = views;
+            el.classList.remove('animate-pulse'); // Tắt hiệu ứng loading
+        }
+    });
+}
 
 // File này chỉ chứa các hàm Render giao diện cho Blog
 export function renderBlogList(posts, title = "Kiến Thức Phong Thủy") {
@@ -16,8 +31,7 @@ export function renderBlogList(posts, title = "Kiến Thức Phong Thủy") {
             <!-- GRID LAYOUT: 3 cột -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 ${posts.map(post => {
-                    // Lấy lượt xem từ Service
-                    const views = ViewService.getViews(post.id);
+                    // Thay vì lấy view đồng bộ, ta tạo placeholder có class 'real-view-count'
                     
                     return `
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group h-full relative">
@@ -60,7 +74,7 @@ export function renderBlogList(posts, title = "Kiến Thức Phong Thủy") {
                                 <!-- Lượt xem -->
                                 <div class="flex items-center gap-1.5 text-gray-400 dark:text-gray-500 text-xs font-medium">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                    <span>${views}</span>
+                                    <span class="real-view-count animate-pulse bg-gray-100 dark:bg-gray-700 rounded px-1 min-w-[20px] text-center" data-id="${post.id}">...</span>
                                 </div>
                             </div>
                         </div>
@@ -74,9 +88,8 @@ export function renderBlogList(posts, title = "Kiến Thức Phong Thủy") {
 export function renderBlogDetail(post) {
     // KIỂM TRA QUYỀN TRUY CẬP
     const canView = AccessControl.canViewPost(post);
-    // Lấy lượt xem (Lúc này view đã được tăng ở main.js rồi)
-    const views = ViewService.getViews(post.id);
-
+    
+    // View detail cũng dùng cơ chế async load
     return `
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden animate-fade-in h-full transition-colors">
              
@@ -105,7 +118,7 @@ export function renderBlogDetail(post) {
                             </span>
                             <span class="flex items-center gap-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                ${views} lượt xem
+                                <span class="real-view-count" data-id="${post.id}">...</span> lượt xem
                             </span>
                         </div>
 

@@ -1,58 +1,48 @@
 
-// Service quản lý lượt xem (Giả lập database bằng LocalStorage)
-// Mỗi bài viết sẽ có một lượng view ngẫu nhiên ban đầu để nhìn cho "xôm tụ"
-// Khi người dùng bấm vào xem, view sẽ tăng thật và lưu lại.
+// Service quản lý lượt xem THẬT (Sử dụng CountAPI)
+// Dữ liệu được lưu trên server của CountAPI, đồng bộ giữa mọi người dùng.
 
-const STORAGE_KEY = 'BLOG_VIEW_COUNTS';
-
-// Tạo số view giả lập ban đầu dựa trên ID bài viết (để số view cố định không đổi mỗi lần F5)
-const getBaseViews = (id) => {
-    // Thuật toán giả lập: ID * 123 + hằng số
-    // Ví dụ: ID 1 => 543 view, ID 2 => 890 view...
-    const seed = id * 168 + 350; 
-    return seed;
-};
+// Namespace duy nhất cho ứng dụng của bạn (đừng thay đổi chuỗi này để giữ dữ liệu)
+const NAMESPACE = 'lich-van-nien-ai-2025-prod';
+const BASE_URL = 'https://api.countapi.xyz';
 
 export const ViewService = {
     /**
-     * Lấy lượt xem của bài viết
-     * @param {number} postId 
-     * @returns {string} Số lượt xem đã format (vd: 1.2k)
+     * Lấy lượt xem của bài viết từ Server
+     * @param {number|string} postId 
+     * @returns {Promise<string>}
      */
-    getViews: (postId) => {
-        const storedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        
-        // Lấy view thật từ storage, nếu chưa có thì dùng view giả lập
-        let realViews = storedData[postId];
-        
-        if (!realViews) {
-            realViews = getBaseViews(postId);
+    getViews: async (postId) => {
+        try {
+            // Gọi API lấy thông tin (action: get)
+            const response = await fetch(`${BASE_URL}/get/${NAMESPACE}/post_${postId}`);
+            const data = await response.json();
+            return ViewService.formatViews(data.value || 0);
+        } catch (error) {
+            console.warn('Không lấy được lượt xem:', error);
+            return '---'; // Trả về placeholder nếu lỗi
         }
-
-        return ViewService.formatViews(realViews);
     },
 
     /**
-     * Tăng lượt xem cho bài viết
-     * @param {number} postId 
+     * Tăng lượt xem cho bài viết (Gọi khi người dùng vào đọc)
+     * @param {number|string} postId 
      */
-    incrementView: (postId) => {
-        const storedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        
-        let currentViews = storedData[postId];
-        if (!currentViews) {
-            currentViews = getBaseViews(postId);
+    incrementView: async (postId) => {
+        try {
+            // Gọi API tăng lượt xem (action: hit)
+            // 'hit' sẽ tự động tăng giá trị lên 1 và trả về giá trị mới
+            await fetch(`${BASE_URL}/hit/${NAMESPACE}/post_${postId}`);
+        } catch (error) {
+            console.warn('Lỗi tăng lượt xem:', error);
         }
-
-        // Tăng 1 view
-        storedData[postId] = currentViews + 1;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(storedData));
     },
 
     /**
      * Format số view (VD: 1200 -> 1.2k)
      */
     formatViews: (num) => {
+        if (!num) return '0';
         if (num >= 1000) {
             return (num / 1000).toFixed(1) + 'k';
         }
