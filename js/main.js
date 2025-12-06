@@ -4,7 +4,7 @@ import { renderBlogList, renderBlogDetail } from './blog.js';
 import { BlogService } from './service.js';
 import { renderFortune, handleFortuneCheck } from './fortune.js';
 import { renderHeroSection } from './components/hero.js'; 
-import { UserService } from './user.js'; // IMPORT MODULE USER
+import { UserService } from './user.js'; 
 
 // --- CONFIGURATION ---
 const GROUP_MAPPING = {
@@ -35,7 +35,8 @@ const state = {
   isMenuOpen: false,
   countdownInterval: null,
   chatHistory: [],
-  currentUser: null // State User
+  currentUser: null,
+  isUserMenuOpen: false // Trạng thái Menu User Desktop
 };
 
 // --- HELPERS ---
@@ -80,7 +81,7 @@ const startCountdown = () => {
     state.countdownInterval = setInterval(update, 1000);
 };
 
-// --- COMPONENT GENERATORS (Giữ nguyên các hàm render HTML phụ) ---
+// --- COMPONENT GENERATORS ---
 const getRelatedPostsHTML = (postId) => {
     const relatedPosts = BlogService.getRelatedPosts(postId);
     return `
@@ -184,8 +185,16 @@ const renderHome = () => {
 const app = {
     init: () => {
         initAI();
-        // Check User Login Status
         state.currentUser = UserService.getCurrentUser();
+
+        // Xử lý sự kiện click ra ngoài để đóng User Menu
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('user-menu-container');
+            const dropdown = document.getElementById('user-menu-dropdown');
+            if (container && !container.contains(e.target) && dropdown && !dropdown.classList.contains('hidden')) {
+                app.closeUserMenu();
+            }
+        });
 
         const params = new URLSearchParams(window.location.search);
         const view = params.get('view');
@@ -201,7 +210,7 @@ const app = {
         app.render();
         renderNav();
         renderMobileMenu();
-        app.updateAuthUI(); // Cập nhật UI đăng nhập
+        app.updateAuthUI(); 
     },
 
     render: () => {
@@ -365,10 +374,25 @@ const app = {
         }
     },
 
-    // --- XỬ LÝ ĐĂNG NHẬP ---
+    // --- XỬ LÝ ĐĂNG NHẬP & USER MENU (NEW) ---
     toggleLogin: () => {
         const modal = document.getElementById('login-modal');
         if (modal) modal.classList.toggle('hidden');
+    },
+
+    // Hàm mới: Bật tắt Menu User (Click thay vì Hover)
+    toggleUserMenu: () => {
+        const dropdown = document.getElementById('user-menu-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('hidden');
+        }
+    },
+
+    closeUserMenu: () => {
+        const dropdown = document.getElementById('user-menu-dropdown');
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+        }
     },
 
     updateAuthUI: () => {
@@ -376,15 +400,29 @@ const app = {
         if (!container) return;
 
         if (state.currentUser) {
-            // Đã đăng nhập
+            // Đã đăng nhập: Hiển thị Avatar + Click để mở menu
             container.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <span class="text-sm font-bold text-gray-700 hidden lg:block">Hi, ${state.currentUser.name}</span>
-                    <div class="relative group">
-                        <img src="${state.currentUser.avatar}" class="w-9 h-9 rounded-full border border-gray-200 cursor-pointer object-cover">
-                        <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 hidden group-hover:block z-50">
-                            <div class="p-3 border-b text-sm font-bold text-gray-700">${state.currentUser.name}</div>
-                            <button onclick="app.logout()" class="w-full text-left p-3 text-sm text-red-600 hover:bg-gray-50 rounded-b-lg">Đăng xuất</button>
+                <div id="user-menu-container" class="relative">
+                    <button onclick="app.toggleUserMenu()" class="flex items-center gap-3 focus:outline-none transition opacity-90 hover:opacity-100">
+                        <span class="text-sm font-bold text-gray-700 hidden lg:block select-none">Hi, ${state.currentUser.name}</span>
+                        <img src="${state.currentUser.avatar}" class="w-9 h-9 rounded-full border border-gray-200 object-cover shadow-sm">
+                    </button>
+                    
+                    <!-- Dropdown Menu (Mặc định ẩn, hiện khi click) -->
+                    <div id="user-menu-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 animate-fade-in z-50 overflow-hidden">
+                        <div class="p-4 border-b border-gray-50 bg-gray-50/50">
+                            <div class="font-bold text-gray-800 truncate">${state.currentUser.name}</div>
+                            <div class="text-xs text-gray-500 truncate">${state.currentUser.email || 'Thành viên'}</div>
+                        </div>
+                        <div class="py-1">
+                             <a onclick="alert('Tính năng đang phát triển')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 cursor-pointer">Thông tin tài khoản</a>
+                             <a onclick="alert('Chức năng đã lưu đang phát triển')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 cursor-pointer">Bài viết đã lưu</a>
+                        </div>
+                        <div class="border-t border-gray-100">
+                            <button onclick="app.logout()" class="w-full text-left px-4 py-3 text-sm text-red-600 font-medium hover:bg-red-50 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                Đăng xuất
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -398,7 +436,6 @@ const app = {
                 </button>
             `;
         }
-        // Cập nhật lại Mobile Menu để hiển thị thông tin
         renderMobileMenu();
     },
 
@@ -409,7 +446,8 @@ const app = {
         
         state.currentUser = user;
         app.updateAuthUI();
-        app.toggleLogin(); // Đóng modal
+        app.toggleLogin(); 
+        app.render(); // Render lại trang để mở khóa bài viết nếu đang xem
         alert(`Chào mừng ${user.name} đã quay trở lại!`);
     },
 
@@ -421,6 +459,7 @@ const app = {
         state.currentUser = user;
         app.updateAuthUI();
         app.toggleLogin(); 
+        app.render(); // Render lại trang
         alert(`Kết nối Facebook thành công! Chào ${user.name}.`);
     },
 
@@ -429,11 +468,11 @@ const app = {
             UserService.logout();
             state.currentUser = null;
             app.updateAuthUI();
-            location.reload(); // Tải lại trang để reset sạch
+            location.reload(); 
         }
     },
 
-    // --- CÁC HÀM UI KHÁC ---
+    // --- CÁC HÀM UI KHÁC (GIỮ NGUYÊN) ---
     toggleFooter: (id) => {
         const el = document.getElementById(id);
         const icon = document.getElementById('icon-' + id);
@@ -606,7 +645,10 @@ function renderMobileMenu() {
                     <img src="${state.currentUser.avatar}" class="w-12 h-12 rounded-full border-2 border-green-600 object-cover">
                     <div>
                         <div class="font-bold text-white text-lg">${state.currentUser.name}</div>
-                        <div onclick="app.logout()" class="text-xs text-red-400 cursor-pointer hover:underline">Đăng xuất</div>
+                        <div onclick="app.logout()" class="text-xs text-red-400 cursor-pointer hover:underline flex items-center gap-1 mt-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> 
+                            Đăng xuất
+                        </div>
                     </div>
                 </div>
             ` : `
@@ -617,7 +659,6 @@ function renderMobileMenu() {
         </div>
 
         <!-- Social Icons (Mô phỏng Unitheme) -->
-        <!-- BẠN HÃY THAY LINK CỦA BẠN VÀO CÁC CHỖ HREF BÊN DƯỚI -->
         <div class="px-5 py-6 flex gap-3 border-b border-gray-800">
             <!-- Facebook -->
             <a href="https://www.facebook.com/trang-cua-ban" target="_blank" class="w-10 h-10 rounded bg-[#252525] flex items-center justify-center hover:bg-[#1877F2] transition text-gray-400 hover:text-white" title="Facebook">
