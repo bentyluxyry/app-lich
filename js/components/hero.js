@@ -1,3 +1,4 @@
+
 import { BlogService } from '../service.js';
 
 // Helper: Chuyển đổi chuỗi ngày "dd/mm/yyyy" thành đối tượng Date
@@ -15,13 +16,13 @@ const parseDate = (dateStr) => {
 // Helper: Lấy tên danh mục ngắn gọn và màu sắc
 const getCatMeta = (code) => {
     const map = {
-        'TU_VI': { name: 'Tử Vi', color: 'text-purple-600', bg: 'bg-purple-50' },
-        'THAN_SO_HOC': { name: 'Thần Số', color: 'text-indigo-600', bg: 'bg-indigo-50' },
-        'PHONG_THUY': { name: 'Phong Thủy', color: 'text-green-600', bg: 'bg-green-50' },
-        'VAN_KHAN': { name: 'Văn Khấn', color: 'text-amber-600', bg: 'bg-amber-50' },
-        'LE_TET': { name: 'Lễ Tết', color: 'text-red-600', bg: 'bg-red-50' }
+        'TU_VI': { name: 'Tử Vi', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+        'THAN_SO_HOC': { name: 'Thần Số', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/20' },
+        'PHONG_THUY': { name: 'Phong Thủy', color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20' },
+        'VAN_KHAN': { name: 'Văn Khấn', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+        'LE_TET': { name: 'Lễ Tết', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20' }
     };
-    return map[code] || { name: 'Tin Tức', color: 'text-blue-600', bg: 'bg-blue-50' };
+    return map[code] || { name: 'Tin Tức', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' };
 };
 
 export const renderHeroSection = () => {
@@ -65,7 +66,7 @@ export const renderHeroSection = () => {
             <!-- CỘT 1: BÀI CHÍNH (Chiếm 6/12) -->
             <!-- Aspect-video giữ tỷ lệ 16:9, đây là cột quy định chiều cao cho cả hàng trên Desktop -->
             <div class="lg:col-span-6 group cursor-pointer h-full" onclick="app.viewPost('${mainPost.slug}')">
-                <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md border border-gray-100 h-full">
+                <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-gray-700 h-full">
                     <img src="${mainPost.image}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="${mainPost.title}">
                     
                     <!-- Overlay Gradient -->
@@ -92,7 +93,7 @@ export const renderHeroSection = () => {
             <div class="lg:col-span-3 flex flex-col gap-5 h-full">
                 
                 <!-- Sub 1: flex-1 để chiếm 50% chiều cao -->
-                <div class="relative flex-1 rounded-2xl overflow-hidden shadow-sm group cursor-pointer border border-gray-100 min-h-[160px]" onclick="app.viewPost('${subPost1.slug}')">
+                <div class="relative flex-1 rounded-2xl overflow-hidden shadow-sm group cursor-pointer border border-gray-100 dark:border-gray-700 min-h-[160px]" onclick="app.viewPost('${subPost1.slug}')">
                     <img src="${subPost1.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${subPost1.title}">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 p-5 w-full">
@@ -104,7 +105,7 @@ export const renderHeroSection = () => {
                 </div>
 
                 <!-- Sub 2: flex-1 để chiếm 50% chiều cao -->
-                <div class="relative flex-1 rounded-2xl overflow-hidden shadow-sm group cursor-pointer border border-gray-100 min-h-[160px]" onclick="app.viewPost('${subPost2.slug}')">
+                <div class="relative flex-1 rounded-2xl overflow-hidden shadow-sm group cursor-pointer border border-gray-100 dark:border-gray-700 min-h-[160px]" onclick="app.viewPost('${subPost2.slug}')">
                     <img src="${subPost2.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${subPost2.title}">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 p-5 w-full">
@@ -119,9 +120,9 @@ export const renderHeroSection = () => {
 
             <!-- CỘT 3: TIN MỚI NHẤT (Chiếm 3/12) -->
             <!-- h-full để bằng chiều cao Cột 1 -->
-            <div class="lg:col-span-3 h-[400px] lg:h-full bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
-                <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h3 class="font-black text-gray-800 uppercase text-xs tracking-wider flex items-center gap-2">
+            <div class="lg:col-span-3 h-[400px] lg:h-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden transition-colors">
+                <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/50 dark:bg-gray-700/30">
+                    <h3 class="font-black text-gray-800 dark:text-white uppercase text-xs tracking-wider flex items-center gap-2">
                         <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -132,19 +133,18 @@ export const renderHeroSection = () => {
                 
                 <!-- List -->
                 <div class="overflow-y-auto custom-scrollbar flex-1 p-0">
-                    <div class="divide-y divide-dashed divide-gray-100">
+                    <div class="divide-y divide-dashed divide-gray-100 dark:divide-gray-700">
                         ${sidebarPosts.map((post) => {
                             const meta = getCatMeta(post.category);
                             return `
-                            <div class="p-4 hover:bg-gray-50 transition cursor-pointer group" onclick="app.viewPost('${post.slug}')">
+                            <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group" onclick="app.viewPost('${post.slug}')">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-[10px] font-bold ${meta.color} bg-white px-2 py-0.5 rounded border border-gray-100 uppercase tracking-wide">
+                                    <span class="text-[10px] font-bold ${meta.color} bg-white dark:bg-gray-900 dark:border-gray-600 px-2 py-0.5 rounded border border-gray-100 uppercase tracking-wide">
                                         ${meta.name}
                                     </span>
-                                    <span class="text-[10px] text-gray-400 font-mono">${post.date.substring(0, 5)}</span>
+                                    <span class="text-[10px] text-gray-400 dark:text-gray-500 font-mono">${post.date.substring(0, 5)}</span>
                                 </div>
-                                <!-- TĂNG CỠ CHỮ Ở ĐÂY: text-sm font-bold -->
-                                <h4 class="text-sm font-bold text-gray-800 leading-snug group-hover:text-green-600 transition-colors line-clamp-3">
+                                <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-snug group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors line-clamp-3">
                                     ${post.title}
                                 </h4>
                             </div>
@@ -152,8 +152,8 @@ export const renderHeroSection = () => {
                     </div>
                 </div>
                 
-                <div class="p-3 border-t border-gray-100 text-center bg-gray-50/30">
-                     <button onclick="app.navigate('BLOG')" class="text-xs font-bold text-gray-500 uppercase hover:text-green-600 transition flex items-center justify-center gap-1 w-full">
+                <div class="p-3 border-t border-gray-100 dark:border-gray-700 text-center bg-gray-50/30 dark:bg-gray-700/20">
+                     <button onclick="app.navigate('BLOG')" class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase hover:text-green-600 dark:hover:text-green-400 transition flex items-center justify-center gap-1 w-full">
                         Xem tất cả tin <span class="text-lg leading-none">›</span>
                      </button>
                 </div>

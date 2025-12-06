@@ -32,6 +32,26 @@
     max-width: 100%;
 }
 
+/* --- DARK MODE SUPPORT --- */
+html.dark .blog-content p,
+html.dark .blog-content ul,
+html.dark .blog-content li {
+    color: #d1d5db; /* gray-300 */
+}
+
+html.dark .blog-content h3,
+html.dark .blog-content h2,
+html.dark .blog-content h4,
+html.dark .blog-content strong {
+    color: #f3f4f6; /* gray-100 */
+}
+
+html.dark .blog-content .blog-quote {
+    background-color: rgba(22, 101, 52, 0.2); /* green-800 low opacity */
+    color: #86efac; /* green-300 */
+    border-left-color: #22c55e;
+}
+
 /* --- VIDEO RESPONSIVE --- */
 .video-container {
     position: relative;
