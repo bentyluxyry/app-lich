@@ -419,21 +419,11 @@ export function renderBlogDetail(post) {
                 <div class="flex items-center gap-2">
                     ${post.isPremium ? '<span class="text-[10px] font-bold bg-yellow-100 text-yellow-800 border border-yellow-200 px-2 py-1 rounded uppercase tracking-wider hidden sm:inline-block">VIP</span>' : ''}
                     
-                    <button onclick="window.appSpeech.start()" class="flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-green-50 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-full transition-all shadow-sm active:scale-95 group whitespace-nowrap">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <!-- Chữ A (Dịch sang trái) -->
-                            <path d="M4 19L9 5L14 19"></path>
-                            <path d="M6 14h6"></path>
-                            
-                            <!-- 3 Sóng âm thanh cong tròn hướng lên góc 45 độ -->
-                            <!-- Wave 1 (Nhỏ) -->
-                            <path d="M16 9a3 3 0 0 1 3-3"></path>
-                            <!-- Wave 2 (Trung) -->
-                            <path d="M18.5 11.5a6 6 0 0 1 4.5-4.5"></path>
-                            <!-- Wave 3 (Lớn) -->
-                            <path d="M20.5 14.5a9 9 0 0 1 3.5-5.5"></path>
+                    <button onclick="window.appSpeech.start()" class="flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-green-50 dark:hover:bg-green-900/30 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-full transition-all shadow-sm active:scale-95 group whitespace-nowrap">
+                        <svg class="w-5 h-5 text-green-600 dark:text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7.5 4c.18 0 .34.1.43.25l.04.08 4 11a.5.5 0 01-.9.42l-.04-.08L9.7 12H5.3l-1.33 3.67a.5.5 0 01-.96-.25l.02-.1 4-11A.5.5 0 017.5 4zm0 1.96L5.67 11h3.66L7.5 5.96zm5.24-3.9l.39.22a9.5 9.5 0 014.84 7.36l.03.31a.5.5 0 01-1 .1l-.03-.32a8.5 8.5 0 00-4.33-6.58l-.38-.21a.5.5 0 01.48-.88zm-1.17 2.68a.5.5 0 01.6-.2l.09.03.12.08a6.5 6.5 0 013.02 4.23l.05.27.04.27a.5.5 0 01-.96.25l-.02-.09-.05-.26a5.5 5.5 0 00-2.37-3.67l-.22-.15-.13-.07a.5.5 0 01-.17-.69z" fill-rule="nonzero"></path>
                         </svg>
-                        <span>Nghe <span class="hidden sm:inline">bài viết</span></span>
+                        <span class="group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors">Nghe <span class="hidden sm:inline">bài viết</span></span>
                     </button>
                 </div>
             </div>
