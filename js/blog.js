@@ -421,17 +421,17 @@ export function renderBlogDetail(post) {
                     
                     <button onclick="window.appSpeech.start()" class="flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-green-50 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-full transition-all shadow-sm active:scale-95 group whitespace-nowrap">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <!-- Chữ A (Dịch sang trái một chút để có chỗ cho sóng lớn) -->
-                            <path d="M3 19L8.5 5L14 19"></path>
-                            <path d="M5.5 14h6"></path>
+                            <!-- Chữ A (Dịch sang trái) -->
+                            <path d="M4 19L9 5L14 19"></path>
+                            <path d="M6 14h6"></path>
                             
-                            <!-- 3 Sóng ở góc 45 độ (Hướng lên góc phải) -->
-                            <!-- Sóng 1 (Nhỏ) -->
-                            <path d="M17 9c.5-.5 .5-1.5 0-2"></path> 
-                            <!-- Sóng 2 (Trung) -->
-                            <path d="M19.5 11.5c1.5-1.5 1.5-4.5 0-6"></path>
-                            <!-- Sóng 3 (Lớn) -->
-                            <path d="M22 14c2.5-2.5 2.5-7.5 0-10"></path>
+                            <!-- 3 Sóng âm thanh cong tròn hướng lên góc 45 độ -->
+                            <!-- Wave 1 (Nhỏ) -->
+                            <path d="M16 9a3 3 0 0 1 3-3"></path>
+                            <!-- Wave 2 (Trung) -->
+                            <path d="M18.5 11.5a6 6 0 0 1 4.5-4.5"></path>
+                            <!-- Wave 3 (Lớn) -->
+                            <path d="M20.5 14.5a9 9 0 0 1 3.5-5.5"></path>
                         </svg>
                         <span>Nghe <span class="hidden sm:inline">bài viết</span></span>
                     </button>
