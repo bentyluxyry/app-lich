@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Đang chuyển hướng...</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // Script này sẽ lấy đường dẫn hiện tại (ví dụ: /bai-viet-a)
+      // và chuyển nó thành query parameter (ví dụ: /?view=BLOG&slug=bai-viet-a)
+      // để trang chủ (index.html) có thể đọc và hiển thị đúng nội dung.
+      
+      var pathSegmentsToKeep = 0; // Thay đổi nếu bạn host trong thư mục con (VD: /du-an/app-lich)
+
+      var l = window.location;
+      
+      // Xây dựng lại URL gốc (Protocol + Hostname + Path gốc)
+      // Ví dụ: https://user.github.io/repo/
+      var repoBase = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + 
+                     l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/';
+
+      // Lấy phần đường dẫn ảo (slug)
+      // Ví dụ: /bai-viet-a -> bai-viet-a
+      var path = l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/');
+      
+      // Bỏ dấu gạch chéo cuối nếu có
+      if (path.endsWith('/')) path = path.slice(0, -1);
+
+      // Nếu là file tĩnh (ảnh, css...) thì không redirect (để 404 tự nhiên)
+      if (path && path.indexOf('.') === -1) {
+          // Logic mapping: Mặc định mọi đường dẫn ảo đều coi là xem BLOG
+          // Chuyển hướng về trang chủ kèm tham số
+          var newUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+                       l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + 
+                       '/?view=BLOG&slug=' + path;
+          
+          window.location.replace(newUrl);
+      } else {
+          // Trường hợp file thực sự không tồn tại
+          document.write('<div style="text-align:center; padding:50px; font-family:sans-serif"><h1>404</h1><p>Không tìm thấy trang yêu cầu.</p><a href="./">Về trang chủ</a></div>');
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
